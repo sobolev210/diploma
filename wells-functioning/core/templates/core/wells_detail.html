@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>{{well.name}}</h1>
+<table>
+    {% for param, value in object.get_fields %}
+        <tr>
+            <td>{{ param }} : {{ value }}</td>
+        </tr>
+    {% endfor %}
+        <tr>
+             <td>Месторождение : <a href="{% url 'core:fields-detail' well.field.pk %}">{{well.field.name}}</a></td>
+        </tr>
+</table>

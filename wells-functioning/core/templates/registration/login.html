@@ -1,0 +1,13 @@
+{% load crispy_forms_tags %}
+
+{% if form.errors %}
+  <p>Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова. </p>
+{% endif %}
+<div style="margin:80px">
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+{{form|crispy}}
+<input type="submit" value="login">
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+  </div>

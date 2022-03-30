@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  app:
+    image: python:3.8
+    working_dir: /code
+    environment:
+      PYTHONUNBUFFERED: 1
+    volumes:
+      - ./wells-functioning:/code
+    command: sh docker-entrypoint.sh
+    # для запуска контейнера с помощью Dockerfile'а
+    # build: .
+    ports:
+      - 8000:8000
+
+
+    # только определяет порядок загрузки, но не дожидается, пока БД будет готова к работе
+    #    depends_on:
+    #      - postgresql
+    #    environment:
+    #      PYTHONUNBUFFERED: 1
+    #    volumes:
+    #      - ./wells-functioning:/code
+    #  app2:
+    #    image: python:3.8
+    #    command: sh docker-entrypoint.sh
+    #    ports:
+    #      - 9000:8000
+    #    working_dir: /code
+    #    environment:
+    #      PYTHONUNBUFFERED: 1
+    #    volumes:
+    #      - ./wells-functioning:/code
+  postgresql:
+    image: postgres
+    volumes:
+      - my_diploma_database_2:/var/lib/postgresql/data
+    # command: sh -c "sleep 1m"
+    environment:
+      POSTGRES_PASSWORD: youwillneverguess
+      POSTGRES_DB: wellsfunctioning
+
+volumes:
+  my_diploma_database_2:
+
+
+
