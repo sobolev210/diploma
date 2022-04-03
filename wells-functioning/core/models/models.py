@@ -202,7 +202,6 @@ class Layer(models.Model):
     bed_top_occurrence_depth = models.FloatField("Глубина залегания кровли", max_length=50)
     bed_floor_occurrence_depth = models.FloatField("Глубина залегания подошвы", max_length=50)
     net_oil_thickness = models.FloatField("Эффективная нефтенасыщенная толщина", max_length=50)
-    porosity = models.FloatField("Пористость", max_length=50)
     full_porosity_ratio = models.FloatField("Коэффициент полной пористости", max_length=50)
     penetrability = models.FloatField("Проницаемость", max_length=50)
     fluid_content = models.CharField('Характер насыщения пласта', max_length=255)
