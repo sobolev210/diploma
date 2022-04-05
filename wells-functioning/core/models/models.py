@@ -126,17 +126,19 @@ class WellState(models.Model):
 
 
 class WellExtraction(models.Model):
+    year = models.IntegerField("Год")
     record_date = models.DateField("Дата создания записи", auto_now_add=True)
     oil_output_t = models.FloatField("Добыча нефти, т", max_length=50)
     oil_output_m3 = models.FloatField("Добыча нефти, м3", max_length=50)
     liquid_output_t = models.FloatField("Добыча жидкости, т", max_length=50)
     liquid_output_m3 = models.FloatField("Добыча жидкости, м3", max_length=50)
     gas_output_m3 = models.FloatField("Добыча газа, м3", max_length=50)
-    injection = models.FloatField("Закачка", max_length=50)
+    water_injection = models.FloatField("Закачка воды", max_length=50)
+    gas_injection = models.FloatField("Закачка газа", max_length=50)
     well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='extraction_notes', verbose_name='Скважина')
 
     def __str__(self):
-        return f"Добыча cкважины {self.well.name} на момент {self.record_date}"
+        return f"Добыча cкважины {self.well.name} за {self.year} год "
 
     class Meta:
         verbose_name = 'Добыча скважины'

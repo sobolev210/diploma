@@ -11,6 +11,7 @@ from django.db.models import F
 
 from .models import Well, Field
 from core.utils import get_field_names
+from core.services.chart_service import WellExtractionChart
 
 
 # user and request are passed automatically to the template
@@ -51,6 +52,7 @@ class WellTableView(View):
         data = Well.objects.values(*required_fields)
         return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
 
+
 # Для теста, перенесу в WellTableView с другой логикой
 class ExtendedWellTableView(View):
     def get(self, request):
@@ -64,6 +66,16 @@ class ExtendedWellTableView(View):
         # print(data)
         return render(request, "core/wells_table.html",
                       {"columns": list(well_columns.keys()) + list(field_columns.keys()), "well_data": data})
+
+
+class WellExtractionChartView(View):
+    def get(self, request):
+        return render(request, "core/wells_chart.html")
+
+    def post(self, request):
+        well_name = request.POST.get("well_name")
+        image_name = WellExtractionChart(well_name=well_name, chart_type="123").build_chart()
+        return render(request, "core/wells_chart.html", {"image_name": image_name})
 
 
 class FieldDetailView(DetailView):

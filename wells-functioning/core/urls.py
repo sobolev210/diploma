@@ -14,6 +14,7 @@ urlpatterns = [
     path('wells', views.WellListView.as_view(), name='wells'),
     path('wells/create', views.WellCreateView.as_view(), name='wells-create'),
     path('wells/table', views.WellTableView.as_view(), name='wells-table'),
+    path('wells/charts/extraction', views.WellExtractionChartView.as_view(), name='wells-extraction-chart'),
     #path('wells/extended-table', views.ExtendedWellTableView.as_view(), name='wells-extended-table'),
     #path('wells/sucess-url', views.WellCreateView.as_view(), name='wells-create'),
     path('wells/<int:pk>', views.WellDetailView.as_view(), name='wells-detail'),

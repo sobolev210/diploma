@@ -1,6 +1,6 @@
-from datetime import date, timedelta
 import random
-from typing import Tuple
+from typing import Tuple, List
+from datetime import date, timedelta, datetime
 
 
 from django.core.management.base import BaseCommand
@@ -55,7 +55,7 @@ class Command(BaseCommand):
 
     def get_dates_of_drilling(self) -> Tuple[date, date, date]:
         start_date = date(2000, 1, 1)
-        available_range = (date(2021, 12, 31) - start_date).days
+        available_range = (date(datetime.now().year - 1, 12, 31) - start_date).days
         start_offset = random.randint(0, available_range - 1800)
         start_date_of_drilling = start_date + timedelta(days=start_offset)
         completion_offset = random.randint(90, 1700)
@@ -73,7 +73,7 @@ class Command(BaseCommand):
             nature_of_work: str = nature_of_work_values
         return purpose, nature_of_work
 
-    def create_wells(self, field: Field, layer: Layer) -> None:
+    def create_wells(self, field: Field, layer: Layer) -> List[Well]:
         wells = []
         for i in range(50):
             params = dict(
@@ -95,19 +95,44 @@ class Command(BaseCommand):
             params["purpose"], params["nature_of_work"] = self.get_purpose_and_nature_of_work()
             wells.append(Well(**params))
 
+        saved_wells = []
         for well in wells:
             try:
                 well.save()
+                saved_wells.append(well)
             except IntegrityError:
                 print(f"Скважина с именем {well.name} уже существует")
+        return saved_wells
 
-    def create_well_state(self, well: Well) -> WellState:
+    def create_well_state_data(self, well: Well) -> WellState:
         pass
 
-    def create_well_extraction(self, well: Well) -> WellExtraction:
-        pass
+    def create_well_extraction_data(self, well: Well) -> None:
+        oil_output_t = 0
+        liquid_output_t = 0
+        gas_output_m3 = 0
+        for year in range(well.service_date.year, datetime.now().year):
+            oil_output_t += random.uniform(0, 5000)
+            oil_output_m3 = oil_output_t/865*1000
+            liquid_output_t += random.uniform(0, 7000)
+            liquid_output_m3 = liquid_output_t/997*1000
+            gas_output_m3 += random.uniform(0, 600)
+
+            WellExtraction.objects.create(
+                year=year,
+                oil_output_t=oil_output_t,
+                oil_output_m3=oil_output_m3,
+                liquid_output_t=liquid_output_t,
+                liquid_output_m3=liquid_output_m3,
+                gas_output_m3=gas_output_m3,
+                water_injection=random.uniform(0, 250),
+                gas_injection=random.uniform(30000, 200000),
+                well=well
+            )
 
     def handle(self, *args, **options):
         layer = self.create_layer()
         field = self.create_field()
-        self.create_wells(field=field, layer=layer)
+        wells = self.create_wells(field=field, layer=layer)
+        for well in wells:
+            self.create_well_extraction_data(well)
