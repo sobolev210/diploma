@@ -106,15 +106,6 @@ class WellState(models.Model):
     accumulation_time = models.FloatField("Время накопления", max_length=10)
     downtime = models.FloatField("Время простоя", max_length=10)
     reason = models.CharField("Причина простоя", max_length=255)
-    oil_rate = models.FloatField("Дебит нефти", max_length=50)
-    liquid_rate = models.FloatField("Дебит жидкости", max_length=50)
-    gas_rate = models.FloatField("Дебит газа", max_length=50)
-    bottom_hole_pressure = models.FloatField("Забойное давление", max_length=50)
-    formational_pressure = models.FloatField("Пластовое давление", max_length=50)
-    pump_parameters_measurement_date = models.DateField("Дата измерения параметров насоса")
-    esp_frequency = models.FloatField("Частота ЭЦН", max_length=50)
-    esp_pressure = models.FloatField("Напор ЭЦН", max_length=50)
-    esp_current = models.FloatField("Ток ЭЦН", max_length=50)
     well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='state_notes', verbose_name='Скважина')
 
     def __str__(self):
@@ -125,6 +116,21 @@ class WellState(models.Model):
         verbose_name_plural = 'Состояния скважин'
 
 
+class PumpParameters(models.Model):
+    pump_parameters_measurement_date = models.DateField("Дата измерения параметров насоса")
+    esp_frequency = models.FloatField("Частота ЭЦН", max_length=50)
+    esp_pressure = models.FloatField("Напор ЭЦН", max_length=50)
+    esp_current = models.FloatField("Ток ЭЦН", max_length=50)
+    well = models.OneToOneField('Well', on_delete=models.CASCADE, related_name='pump_parameters', verbose_name='Скважина')
+
+    def __str__(self):
+        return f"Насос скважины {self.well.name}"
+
+    class Meta:
+        verbose_name = 'Насос'
+        verbose_name_plural = 'Насосы'
+
+
 class WellExtraction(models.Model):
     year = models.IntegerField("Год")
     record_date = models.DateField("Дата создания записи", auto_now_add=True)
@@ -132,9 +138,13 @@ class WellExtraction(models.Model):
     oil_output_m3 = models.FloatField("Добыча нефти, м3", max_length=50)
     liquid_output_t = models.FloatField("Добыча жидкости, т", max_length=50)
     liquid_output_m3 = models.FloatField("Добыча жидкости, м3", max_length=50)
-    gas_output_m3 = models.FloatField("Добыча газа, м3", max_length=50)
+    gas_output_m3 = models.FloatField("Добыча газа, тыс м3", max_length=50)
     water_injection = models.FloatField("Закачка воды", max_length=50)
     gas_injection = models.FloatField("Закачка газа", max_length=50)
+    oil_rate = models.FloatField("Дебит нефти, т/cут", max_length=50)
+    liquid_rate = models.FloatField("Дебит жидкости, м3/сут", max_length=50)
+    gas_rate = models.FloatField("Дебит газа, тыс м3/сут", max_length=50)
+    bottom_hole_pressure = models.FloatField("Забойное давление", max_length=50)
     well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='extraction_notes', verbose_name='Скважина')
 
     def __str__(self):

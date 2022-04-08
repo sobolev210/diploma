@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 app_name = 'core'
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='core/main.html')),
+    path('', TemplateView.as_view(template_name='core/main.html'), name="main"),
     path('open', views.OpenView.as_view(), name='open'),
     path('apereo', views.ApereoView.as_view(), name='apereo'),
     path('manual', views.ManualProtect.as_view(), name='manual'),

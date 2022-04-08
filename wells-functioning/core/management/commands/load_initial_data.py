@@ -109,25 +109,31 @@ class Command(BaseCommand):
 
     def create_well_extraction_data(self, well: Well) -> None:
         oil_output_t = 0
-        liquid_output_t = 0
         gas_output_m3 = 0
+        liquid_output_m3 = 0
+
         for year in range(well.service_date.year, datetime.now().year):
-            oil_output_t += random.uniform(0, 5000)
-            oil_output_m3 = oil_output_t/865*1000
-            liquid_output_t += random.uniform(0, 7000)
-            liquid_output_m3 = liquid_output_t/997*1000
-            gas_output_m3 += random.uniform(0, 600)
+            oil_output_t_inc = random.uniform(0, 5000)
+            liquid_output_m3_inc = random.uniform(0, 7000)
+            gas_output_m3_inc = random.uniform(0, 600)
+            oil_output_t += oil_output_t_inc
+            liquid_output_m3 += liquid_output_m3_inc
+            gas_output_m3 += gas_output_m3_inc
 
             WellExtraction.objects.create(
                 year=year,
                 oil_output_t=oil_output_t,
-                oil_output_m3=oil_output_m3,
-                liquid_output_t=liquid_output_t,
+                oil_output_m3=oil_output_t/865*1000,
+                liquid_output_t=liquid_output_m3/1000*997,
                 liquid_output_m3=liquid_output_m3,
                 gas_output_m3=gas_output_m3,
                 water_injection=random.uniform(0, 250),
                 gas_injection=random.uniform(30000, 200000),
-                well=well
+                well=well,
+                oil_rate=oil_output_t_inc/365,
+                liquid_rate=liquid_output_m3_inc/365,
+                gas_rate=gas_output_m3_inc/365,
+                bottom_hole_pressure=well.layer.layer_pressure - random.uniform(1, 3.5)
             )
 
     def handle(self, *args, **options):
