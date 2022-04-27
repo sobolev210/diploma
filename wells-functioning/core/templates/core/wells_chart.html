@@ -11,6 +11,25 @@
     {% csrf_token %}
     <label for="well_name">Название скважины: </label><br>
   <input type="text" id="well_name" name="well_name"><br>
+    <div>
+  <input type="checkbox" id="нефть" name="нефть">
+  <label for="Field">Показатели по нефти</label>
+</div>
+<div>
+  <input type="checkbox" id="газ" name="газ">
+  <label for="Organization">Показатели по газу</label>
+</div>
+<div>
+  <input type="checkbox" id="жидкость" name="жидкость">
+  <label for="Cluster">Показатели по жидкости</label>
+</div>
+    <label for="layers">Пласт:</label>
+
+<select name="layers" id="layers">
+  {% for layer in layers %}
+    <option value={{layer.id}}>{{layer.name}}</option>
+    {% endfor %}
+</select>
 <button type="submit">Построить график</button>
 </form>
 {% if image_name %}

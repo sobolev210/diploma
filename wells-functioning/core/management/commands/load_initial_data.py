@@ -2,7 +2,6 @@ import random
 from typing import Tuple, List
 from datetime import date, timedelta, datetime
 
-
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
 from numpy.random import choice
@@ -73,12 +72,12 @@ class Command(BaseCommand):
             nature_of_work: str = nature_of_work_values
         return purpose, nature_of_work
 
-    def create_wells(self, field: Field, layer: Layer) -> List[Well]:
+    def create_wells(self, field: Field, layer: Layer, letter: str) -> List[Well]:
         wells = []
-        for i in range(50):
+        for i in range(random.randint(10, 60)):
             params = dict(
-                name=f"{random.randint(100, 1200)}P",
-                #todo пока вероятность не работает
+                name=f"{random.randint(10, 2000)}{letter}",
+                # todo пока вероятность не работает
                 purpose=choice(["добывающая", "нагнетательная", "специальная", "вспомогательная"],
                                p=[0.7, 0.1, 0.1, 0.1]),
                 well_type=choice(["многозабойная", "горизонтальная", "наклонно-направленная"], p=[0.25, 0.5, 0.25]),
@@ -123,22 +122,24 @@ class Command(BaseCommand):
             WellExtraction.objects.create(
                 year=year,
                 oil_output_t=oil_output_t,
-                oil_output_m3=oil_output_t/865*1000,
-                liquid_output_t=liquid_output_m3/1000*997,
+                oil_output_m3=oil_output_t / 865 * 1000,
+                liquid_output_t=liquid_output_m3 / 1000 * 997,
                 liquid_output_m3=liquid_output_m3,
                 gas_output_m3=gas_output_m3,
                 water_injection=random.uniform(0, 250),
                 gas_injection=random.uniform(30000, 200000),
                 well=well,
-                oil_rate=oil_output_t_inc/365,
-                liquid_rate=liquid_output_m3_inc/365,
-                gas_rate=gas_output_m3_inc/365,
+                oil_rate=oil_output_t_inc / 365,
+                liquid_rate=liquid_output_m3_inc / 365,
+                gas_rate=gas_output_m3_inc / 365,
                 bottom_hole_pressure=well.layer.layer_pressure - random.uniform(1, 3.5)
             )
 
     def handle(self, *args, **options):
-        layer = self.create_layer()
-        field = self.create_field()
-        wells = self.create_wells(field=field, layer=layer)
-        for well in wells:
-            self.create_well_extraction_data(well)
+        fields = Field.objects.all()
+        for field in fields:
+            for layer in field.layers.all():
+                letter = random.choice(["P", "I", "J", "N", "U"])
+                wells = self.create_wells(field=field, layer=layer, letter=letter)
+                for well in wells:
+                    self.create_well_extraction_data(well)

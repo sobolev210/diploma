@@ -1,0 +1,187 @@
+[
+  {
+    "model": "core.layer",
+    "pk": 1,
+    "fields": {
+      "name": "Ю1",
+      "reservoir_type": "поровый",
+      "layer_pressure": 17.8,
+      "bed_top_occurrence_depth": 670,
+      "bed_floor_occurrence_depth": 1360,
+      "net_oil_thickness": 13.9,
+      "full_porosity_ratio": 0.18,
+      "penetrability": 2.8,
+      "fluid_content": "нефтенасыщенный",
+      "cluster_age": 120000,
+      "cluster_toughness": 1.6,
+      "oil_saturation_factor": 0.35,
+      "gas_saturation_factor": 0.24,
+      "water_saturation_factor": 0.14,
+      "start_layer_pressure": 20,
+      "residual_water_content": 0.57,
+      "bubble_point_pressure": 18.4
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 2,
+    "fields": {
+      "name": "БП10",
+      "reservoir_type": "поровый",
+      "layer_pressure": 19.8,
+      "bed_top_occurrence_depth": 2235.24,
+      "bed_floor_occurrence_depth": 2422.42,
+      "net_oil_thickness": 8.2,
+      "full_porosity_ratio": 0.19,
+      "penetrability": 1.7,
+      "fluid_content": "нефтенасыщенный",
+      "cluster_age": 135000,
+      "cluster_toughness": 1.8,
+      "oil_saturation_factor": 0.28,
+      "gas_saturation_factor": 0.21,
+      "water_saturation_factor": 0.18,
+      "start_layer_pressure": 20.3,
+      "residual_water_content": 0.51,
+      "bubble_point_pressure": 20
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 3,
+    "fields": {
+      "name": "Ю3",
+      "reservoir_type": "кавернозный",
+      "layer_pressure": 19.6,
+      "bed_top_occurrence_depth": 2359.03,
+      "bed_floor_occurrence_depth": 2468.32,
+      "net_oil_thickness": 12.8,
+      "full_porosity_ratio": 0.15,
+      "penetrability": 0.8,
+      "fluid_content": "газонасыщенный",
+      "cluster_age": 135000,
+      "cluster_toughness": 1.8,
+      "oil_saturation_factor": 0.17,
+      "gas_saturation_factor": 0.28,
+      "water_saturation_factor": 0.21,
+      "start_layer_pressure": 20.4,
+      "residual_water_content": 0.65,
+      "bubble_point_pressure": 19.8
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 4,
+    "fields": {
+      "name": "Ю4",
+      "reservoir_type": "смешанный",
+      "layer_pressure": 19.4,
+      "bed_top_occurrence_depth": 2208.34,
+      "bed_floor_occurrence_depth": 2391.47,
+      "net_oil_thickness": 13.1,
+      "full_porosity_ratio": 0.14,
+      "penetrability": 4.41,
+      "fluid_content": "водоносный",
+      "cluster_age": 194000,
+      "cluster_toughness": 1.4,
+      "oil_saturation_factor": 0.15,
+      "gas_saturation_factor": 0.14,
+      "water_saturation_factor": 0.48,
+      "start_layer_pressure": 20.3,
+      "residual_water_content": 0.59,
+      "bubble_point_pressure": 19.6
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 5,
+    "fields": {
+      "name": "Ю2",
+      "reservoir_type": "поровый",
+      "layer_pressure": 20.48,
+      "bed_top_occurrence_depth": 2360.24,
+      "bed_floor_occurrence_depth": 2459.23,
+      "net_oil_thickness": 7.4,
+      "full_porosity_ratio": 0.17,
+      "penetrability": 2.34,
+      "fluid_content": "нефтенасыщенный",
+      "cluster_age": 194000,
+      "cluster_toughness": 1.4,
+      "oil_saturation_factor": 0.28,
+      "gas_saturation_factor": 0.19,
+      "water_saturation_factor": 0.33,
+      "start_layer_pressure": 23.97,
+      "residual_water_content": 0.63,
+      "bubble_point_pressure": 21.32
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 6,
+    "fields": {
+      "name": "НП8",
+      "reservoir_type": "трещиноватый",
+      "layer_pressure": 20.51,
+      "bed_top_occurrence_depth": 2113.46,
+      "bed_floor_occurrence_depth": 2281.44,
+      "net_oil_thickness": 12.8,
+      "full_porosity_ratio": 0.13,
+      "penetrability": 0.19,
+      "fluid_content": "нефтенасыщенный",
+      "cluster_age": 1280000,
+      "cluster_toughness": 1.2,
+      "oil_saturation_factor": 0.24,
+      "gas_saturation_factor": 0.17,
+      "water_saturation_factor": 0.37,
+      "start_layer_pressure": 22.48,
+      "residual_water_content": 0.52,
+      "bubble_point_pressure": 20.83
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 7,
+    "fields": {
+      "name": "НП11",
+      "reservoir_type": "смешанный",
+      "layer_pressure": 20.31,
+      "bed_top_occurrence_depth": 2049.51,
+      "bed_floor_occurrence_depth": 2195.34,
+      "net_oil_thickness": 11.6,
+      "full_porosity_ratio": 0.11,
+      "penetrability": 0.17,
+      "fluid_content": "газоконденсатонефтяной",
+      "cluster_age": 192350,
+      "cluster_toughness": 1.1,
+      "oil_saturation_factor": 0.27,
+      "gas_saturation_factor": 0.21,
+      "water_saturation_factor": 0.41,
+      "start_layer_pressure": 21.32,
+      "residual_water_content": 0.52,
+      "bubble_point_pressure": 20.92
+    }
+  },
+  {
+    "model": "core.layer",
+    "pk": 8,
+    "fields": {
+      "name": "ХМ1",
+      "reservoir_type": "нефтяной",
+      "layer_pressure": 20.44,
+      "bed_top_occurrence_depth": 2152.37,
+      "bed_floor_occurrence_depth": 2392.46,
+      "net_oil_thickness": 14.22,
+      "full_porosity_ratio": 0.18,
+      "penetrability": 0.24,
+      "fluid_content": "газоконденсатонефтяной",
+      "cluster_age": 238900,
+      "cluster_toughness": 1.4,
+      "oil_saturation_factor": 0.29,
+      "gas_saturation_factor": 0.19,
+      "water_saturation_factor": 0.31,
+      "start_layer_pressure": 22.07,
+      "residual_water_content": 0.49,
+      "bubble_point_pressure": 20.67
+    }
+  }
+]
+

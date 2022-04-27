@@ -7,7 +7,7 @@ from django.urls import reverse
 
 
 class Well(models.Model):
-    name = models.CharField("Имя скважины", max_length=255, unique=True)
+    name = models.CharField("Имя скважины", max_length=255)
     purpose = models.CharField("Назначение скважины", max_length=255)
     well_type = models.CharField("Тип скважины", max_length=255)
     profile = models.CharField("Профиль", max_length=255)
@@ -32,6 +32,7 @@ class Well(models.Model):
     class Meta:
         verbose_name = 'Скважина'
         verbose_name_plural = 'Скважины'
+        unique_together = ('name', 'layer',)
 
     def __str__(self):
         return self.name

@@ -9,9 +9,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.db.models import F
 
-from .models import Well, Field
+from .models import Well, Field, Layer
 from core.utils import get_field_names
-from core.services.chart_service import WellExtractionChart
+from core.services.chart_service import WellExtractionChart, WellAmountChart
 
 
 # user and request are passed automatically to the template
@@ -69,13 +69,45 @@ class ExtendedWellTableView(View):
 
 
 class WellExtractionChartView(View):
+    _layers = Layer.objects.all()
+
+    params = {
+        "По дебитам": {
+            "газ": "Дебит газа, тыс м3/сут", "жидкость": "Дебит жидкости, м3/сут", "нефть": "Дебит нефти, т/cут"
+        },
+        "По накопленной добыче": {
+            "газ": "Добыча газа, тыс м3", "жидкость": "Добыча жидкости, м3", "нефть": "Добыча нефти, м3"
+        }
+    }
+    options = ["нефть", "жидкость", "газ"]
+
     def get(self, request):
-        return render(request, "core/wells_chart.html")
+        return render(request, "core/wells_chart.html", {"layers": self._layers})
 
     def post(self, request):
         well_name = request.POST.get("well_name")
-        image_name = WellExtractionChart(well_name=well_name, chart_type="123").build_chart()
-        return render(request, "core/wells_chart.html", {"image_name": image_name})
+        layer_id = request.POST.get("layers")
+        if not well_name:
+            y_axis = "Количество скважин13"
+            WellAmountChart(layer_id=layer_id, y_axis=y_axis).build_chart()
+        else:
+            chart_data = "По накопленной добыче"
+            x_axis = "Год"
+            y_axis = []
+            for option, attr_name in self.params[chart_data].items():
+                if request.POST.get(option):
+                    y_axis.append(attr_name)
+            if not y_axis:
+                pass
+                # exception - для построения графика должен быть выбран хотя бы один параметр
+            WellExtractionChart(
+                well_name=well_name,
+                chart_type="bar",
+                x_axis=x_axis,
+                y_axis=y_axis,
+                layer_id=layer_id
+            ).build_chart()
+        return render(request, "core/wells_chart.html", {"image_name": "chart.png", "layers": self._layers})
 
 
 class FieldDetailView(DetailView):
