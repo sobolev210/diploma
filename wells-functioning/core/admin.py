@@ -14,7 +14,7 @@ class FieldAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Organisation)
+@admin.register(Organization)
 class OrganisationAdmin(admin.ModelAdmin):
     pass
 

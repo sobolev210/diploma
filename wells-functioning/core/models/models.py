@@ -68,9 +68,8 @@ class Well(models.Model):
 class Field(models.Model):
     name = models.CharField("Название месторождения", max_length=255, unique=True)
     field_type = models.CharField("Тип месторождения", max_length=255)
-    abbreviation = models.CharField("Аббревиатура", max_length=20, null=True, blank=True)
     layers = models.ManyToManyField('Layer', related_name='fields', blank=True, verbose_name="Пласты")
-    owner = models.ForeignKey('Organisation', on_delete=models.SET_NULL, related_name='wells', null=True,
+    owner = models.ForeignKey('Organization', on_delete=models.SET_NULL, related_name='fields', null=True,
                               blank=True, verbose_name='Владелец')
 
     class Meta:
@@ -91,9 +90,10 @@ class Field(models.Model):
         return result
 
 
-class Organisation(models.Model):
+class Organization(models.Model):
     name = models.CharField("Название организации", max_length=255, unique=True)
     description = models.TextField('Описание', null=True, blank=True)
+    abbreviation = models.CharField("Аббревиатура", max_length=20, null=True, blank=True)
 
     def __str__(self):
         return self.name

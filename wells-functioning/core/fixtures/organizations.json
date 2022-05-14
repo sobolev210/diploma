@@ -1,0 +1,23 @@
+[
+  {
+    "model": "core.organization",
+    "pk": 1,
+    "fields": {
+      "name": "Северный нефтегаз"
+    }
+  },
+  {
+    "model": "core.organization",
+    "pk": 2,
+    "fields": {
+      "name": "Восточный нефтегаз"
+    }
+  },
+  {
+    "model": "core.organization",
+    "pk": 3,
+    "fields": {
+      "name": "Карельский нефтегаз"
+    }
+  }
+]

@@ -92,12 +92,14 @@ class WellExtractionChartView(View):
         field = request.POST.get("fields")
         group_by = request.POST.get("group_by")
         aggregation_type = request.POST.get("aggregation_type")
+        representation = request.POST.get("representation")
         if not well_name:
             GroupedWellChart(
                 layer_id=layer_id,
                 field=field,
                 aggregation_type=aggregation_type,
-                group_by=group_by
+                group_by=group_by,
+                representation=representation
             ).build_chart()
         else:
             #todo make chart_data dynamic

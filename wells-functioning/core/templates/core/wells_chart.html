@@ -38,6 +38,7 @@
 <select name="group_by" id="group_by">
   <option value="Пласт">Пласту</option>
     <option value="Месторождение">Месторождению</option>
+    <option value="Организация">Организации</option>
 </select>
     <br> <br>
     <label for="fields">Параметр:</label>
@@ -54,6 +55,13 @@
     <option value="Суммировать">Сумма</option>
     <option value="Среднее арифметическое">Среднее арифметическое</option>
 </select>
+    <p>Отображать:</p>
+    <input id="Проценты" type="radio" name="representation" value="Проценты">
+    <label for="Проценты">Проценты</label>
+    <br>
+    <input id="Значения" type="radio" name="representation" value="Значения">
+    <label for="Значения">Значения</label>
+    <br><br>
 <button type="submit">Построить график</button>
 </form>
 <br> <br><br> <br>
