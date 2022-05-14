@@ -20,9 +20,9 @@ class Well(models.Model):
     service_date = models.DateField("Дата ввода скважины")
     mining_method = models.CharField("Метод добычи", max_length=255)
     comment = models.TextField("Примечание", blank=True, null=True)
+    x_coordinate = models.FloatField("Координата Х", max_length=50)
+    y_coordinate = models.FloatField("Координата Y", max_length=50)
     field = models.ForeignKey('Field', on_delete=models.CASCADE, related_name='wells', verbose_name='Месторождение')
-    owner = models.ForeignKey('Organisation', on_delete=models.SET_NULL, related_name='wells', null=True,
-                              blank=True, verbose_name='Владелец')
     smush = models.ForeignKey('Smush', on_delete=models.SET_NULL, related_name='wells', null=True,
                               blank=True, verbose_name='Буровой раствор')
     cluster = models.ForeignKey('Cluster', on_delete=models.SET_NULL, related_name='wells', null=True,
@@ -68,7 +68,10 @@ class Well(models.Model):
 class Field(models.Model):
     name = models.CharField("Название месторождения", max_length=255, unique=True)
     field_type = models.CharField("Тип месторождения", max_length=255)
+    abbreviation = models.CharField("Аббревиатура", max_length=20, null=True, blank=True)
     layers = models.ManyToManyField('Layer', related_name='fields', blank=True, verbose_name="Пласты")
+    owner = models.ForeignKey('Organisation', on_delete=models.SET_NULL, related_name='wells', null=True,
+                              blank=True, verbose_name='Владелец')
 
     class Meta:
         verbose_name = 'Месторождение'
@@ -119,6 +122,7 @@ class WellState(models.Model):
 
 class PumpParameters(models.Model):
     pump_parameters_measurement_date = models.DateField("Дата измерения параметров насоса")
+    pump_type = models.CharField("Вид насоса", max_length=255)
     esp_frequency = models.FloatField("Частота ЭЦН", max_length=50)
     esp_pressure = models.FloatField("Напор ЭЦН", max_length=50)
     esp_current = models.FloatField("Ток ЭЦН", max_length=50)
@@ -165,6 +169,7 @@ class CoreSample(models.Model):
     kerosene_connected_porosity = models.FloatField("Открытая пористость по керосину", max_length=50)
     young_modulus = models.FloatField("Модуль Юнга", max_length=50)
     poissons_ratio = models.FloatField("Коэффициент Пуассона", max_length=50)
+    # Скважина выводится из эксплуатации, а образцы пород остаются
     well = models.ForeignKey('Well', on_delete=models.SET_NULL, null=True, related_name='core_samples',
                              verbose_name='Скважина')
 
@@ -197,9 +202,8 @@ class Smush(models.Model):
 
 class Cluster(models.Model):
     name = models.CharField('Название куста', max_length=255)
-    x_coordinate = models.FloatField("Координата Х", max_length=50)
-    y_coordinate = models.FloatField("Координата Y", max_length=50)
     field = models.ForeignKey("Field", on_delete=models.CASCADE, related_name='clusters', verbose_name='Месторождение')
+    max_deflection_of_borehole = models.FloatField("Максимальное отклонение забоя", max_length=50)
 
     def __str__(self):
         return self.name
