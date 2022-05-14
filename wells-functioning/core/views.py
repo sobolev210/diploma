@@ -9,9 +9,9 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.db.models import F
 
-from .models import Well, Field, Layer
+from .models import Well, Field, Layer, WellExtraction
 from core.utils import get_field_names
-from core.services.chart_service import WellExtractionChart, WellAmountChart
+from core.services.chart_service import WellExtractionChart, GroupedWellChart
 
 
 # user and request are passed automatically to the template
@@ -70,6 +70,8 @@ class ExtendedWellTableView(View):
 
 class WellExtractionChartView(View):
     _layers = Layer.objects.all()
+    _fields = {**{"Количество скважин": "Количество_скважин"},
+               **get_field_names(WellExtraction, exclude_fields=["year", "record_date", ])}
 
     params = {
         "По дебитам": {
@@ -82,15 +84,23 @@ class WellExtractionChartView(View):
     options = ["нефть", "жидкость", "газ"]
 
     def get(self, request):
-        return render(request, "core/wells_chart.html", {"layers": self._layers})
+        return render(request, "core/wells_chart.html", {"layers": self._layers, "fields": self._fields})
 
     def post(self, request):
         well_name = request.POST.get("well_name")
         layer_id = request.POST.get("layers")
+        field = request.POST.get("fields")
+        group_by = request.POST.get("group_by")
+        aggregation_type = request.POST.get("aggregation_type")
         if not well_name:
-            y_axis = "Количество скважин13"
-            WellAmountChart(layer_id=layer_id, y_axis=y_axis).build_chart()
+            GroupedWellChart(
+                layer_id=layer_id,
+                field=field,
+                aggregation_type=aggregation_type,
+                group_by=group_by
+            ).build_chart()
         else:
+            #todo make chart_data dynamic
             chart_data = "По накопленной добыче"
             x_axis = "Год"
             y_axis = []
@@ -107,7 +117,9 @@ class WellExtractionChartView(View):
                 y_axis=y_axis,
                 layer_id=layer_id
             ).build_chart()
-        return render(request, "core/wells_chart.html", {"image_name": "chart.png", "layers": self._layers})
+        return render(request, "core/wells_chart.html", {
+            "image_name": "chart.png", "layers": self._layers, "fields": self._fields
+        })
 
 
 class FieldDetailView(DetailView):

@@ -165,7 +165,8 @@ class CoreSample(models.Model):
     kerosene_connected_porosity = models.FloatField("Открытая пористость по керосину", max_length=50)
     young_modulus = models.FloatField("Модуль Юнга", max_length=50)
     poissons_ratio = models.FloatField("Коэффициент Пуассона", max_length=50)
-    well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='core_samples', verbose_name='Скважина')
+    well = models.ForeignKey('Well', on_delete=models.SET_NULL, null=True, related_name='core_samples',
+                             verbose_name='Скважина')
 
     def __str__(self):
         return f"Керн № {self.sample_number}"

@@ -30,8 +30,33 @@
     <option value={{layer.id}}>{{layer.name}}</option>
     {% endfor %}
 </select>
+    </div>
+
+    <br> <br>
+    <label for="fields">Группировать по:</label>
+
+<select name="group_by" id="group_by">
+  <option value="Пласт">Пласту</option>
+    <option value="Месторождение">Месторождению</option>
+</select>
+    <br> <br>
+    <label for="fields">Параметр:</label>
+
+<select name="fields" id="fields">
+  {% for key,value in fields.items %}
+    <option value={{value}}>{{key}}</option>
+    {% endfor %}
+</select>
+    <br> <br>
+    <label for="fields">Тип агрегации:</label>
+
+<select name="aggregation_type" id="aggregation_type">
+    <option value="Суммировать">Сумма</option>
+    <option value="Среднее арифметическое">Среднее арифметическое</option>
+</select>
 <button type="submit">Построить график</button>
 </form>
+<br> <br><br> <br>
 {% if image_name %}
 <img src="{% get_media_prefix %}{{image_name}}">
 {% endif %}
