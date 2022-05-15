@@ -85,7 +85,9 @@ class Command(BaseCommand):
                 license_block="Снежный",
                 mining_method=random.choice(["фонтанный", "компрессорный", "насосный"]),
                 field=field,
-                layer=layer
+                layer=layer,
+                x_coordinate=field.x_coordinate + random.uniform(-0.07, 0.07),
+                y_coordinate=field.y_coordinate + random.uniform(-0.07, 0.07)
             )
             params["profile"] = random.choice(["A", "Б", "В", "Г"]) if params["well_type"] == "наклонно-направленная" else "-"
             params["sank_amount"] = random.randint(1, 4) if params["well_type"] == "многозабойная" else 0

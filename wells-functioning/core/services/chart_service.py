@@ -58,6 +58,12 @@ class GroupedWellChart:
         self.representation = representation
         self.symbol = "%" if self.representation == "Проценты" else ""
 
+    def round_value(self, value):
+        value = round(value, 2)
+        if value.is_integer():
+            value = int(value)
+        return value
+
     def get_title(self):
         if self.field == "Количество_скважин":
             return "Количество скважин"
@@ -68,7 +74,7 @@ class GroupedWellChart:
         figure = df.plot(
             kind='pie', y=self.field,
             autopct=lambda x:
-            f'{round(x, 2) if self.representation == "Проценты" else round(x/100*float(df.sum()), 2)}{self.symbol}',
+            f'{round(x, 2) if self.representation == "Проценты" else self.round_value(x / 100 * float(df.sum()))}{self.symbol}',
             ylabel='', title=self.get_title()).legend(
             loc='center left', bbox_to_anchor=(1, 0.8)
         ).get_figure()

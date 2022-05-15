@@ -68,6 +68,8 @@ class Well(models.Model):
 class Field(models.Model):
     name = models.CharField("Название месторождения", max_length=255, unique=True)
     field_type = models.CharField("Тип месторождения", max_length=255)
+    x_coordinate = models.FloatField("Координата Х", max_length=50)
+    y_coordinate = models.FloatField("Координата Y", max_length=50)
     layers = models.ManyToManyField('Layer', related_name='fields', blank=True, verbose_name="Пласты")
     owner = models.ForeignKey('Organization', on_delete=models.SET_NULL, related_name='fields', null=True,
                               blank=True, verbose_name='Владелец')

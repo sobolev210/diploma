@@ -5,6 +5,8 @@
     "fields": {
       "name": "Снежное",
       "field_type": "нефтегазовое",
+      "x_coordinate": 59.045191,
+      "y_coordinate": 79.784337,
       "layers": [1],
       "owner": 1
     }
@@ -15,6 +17,8 @@
     "fields": {
       "name": "Северо-Губкинское",
       "field_type": "нефтегазовое",
+      "x_coordinate": 65.255901,
+      "y_coordinate": 76.597598,
       "layers": [2],
       "owner": 1
     }
@@ -25,6 +29,8 @@
     "fields": {
       "name": "Тямкинское",
       "field_type": "нефтяное",
+      "x_coordinate": 59.189648,
+      "y_coordinate": 71.889411,
       "layers": [3, 4],
       "owner": 2
     }
@@ -35,6 +41,8 @@
     "fields": {
       "name": "Тайлаковсоке",
       "field_type": "нефтегазовое",
+      "x_coordinate": 59.397733,
+      "y_coordinate": 74.017479,
       "layers": [5],
       "owner": 2
     }
@@ -45,6 +53,8 @@
     "fields": {
       "name": "Новопортовское",
       "field_type": "нефтегазоконденсатное",
+      "x_coordinate": 67.795915,
+      "y_coordinate": 72.575160,
       "layers": [5, 6, 7, 8],
       "owner": 3
     }
