@@ -8,6 +8,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.db.models import F
+from django_admin_geomap import geomap_context
 
 from .models import Well, Field, Layer, WellExtraction
 from core.utils import get_field_names
@@ -186,3 +187,8 @@ class DumpPython(View):
         resp += "</pre>\n"
         resp += """<a href="/core">Go back</a>"""
         return HttpResponse(resp)
+
+
+#https://github.com/vb64/django.admin.geomap
+def map_view(request):
+    return render(request, 'core/map.html', geomap_context(Well.objects.all(), map_height="1300px"))

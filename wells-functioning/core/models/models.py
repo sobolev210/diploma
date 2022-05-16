@@ -1,12 +1,22 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django_admin_geomap import GeoItem
 
 # добавить owner
 from django.urls import reverse
 
 
-class Well(models.Model):
+class Well(models.Model, GeoItem):
+
+    @property
+    def geomap_latitude(self):
+        return '' if self.x_coordinate is None else str(self.x_coordinate)
+
+    @property
+    def geomap_longitude(self):
+        return '' if self.y_coordinate is None else str(self.y_coordinate)
+
     name = models.CharField("Имя скважины", max_length=255)
     purpose = models.CharField("Назначение скважины", max_length=255)
     well_type = models.CharField("Тип скважины", max_length=255)

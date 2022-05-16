@@ -20,4 +20,5 @@ urlpatterns = [
     path('wells/<int:pk>', views.WellDetailView.as_view(), name='wells-detail'),
     path('fields/<int:pk>', views.FieldDetailView.as_view(), name='fields-detail'),
     path('fields/create', views.FieldCreateView.as_view(), name='fields-create'),
+    path('map', views.map_view, name="map")
 ]
