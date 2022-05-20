@@ -2,18 +2,15 @@
 {% load static %}
 <html style="font-size: 16px;">
 <head>
-    <style>
-
-    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="Скважины">
+    <meta name="keywords" content="Настройки">
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
-    <title>Карта</title>
+    <title>Графики по всей компании</title>
     <link rel="stylesheet" href="{% static 'css/nicepage.css' %}" media="screen">
-    <link rel="stylesheet" href="{% static 'css/Таблицы.css' %}" media="screen">
-<!--    <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>-->
+    <link rel="stylesheet" href="{% static 'css/Графики-по-всей-компании.css' %}" media="screen">
+    <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js'%}" defer=""></script>
     <script class="u-script" type="text/javascript" src="{% static 'js/nicepage.js' %}" defer=""></script>
     <meta name="generator" content="Nicepage 4.8.2, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet"
@@ -27,7 +24,7 @@
         "logo": "{% static 'images/logo.png' %}"
     }</script>
     <meta name="theme-color" content="#478ac9">
-    <meta property="og:title" content="Карта">
+    <meta property="og:title" content="Графики по всей компании">
     <meta property="og:type" content="website">
 </head>
 <body class="u-body u-xl-mode">
@@ -107,9 +104,69 @@
         </nav>
     </div>
 </header>
-<!--Hello, OpenStreetMap!-->
-<div>{% include "geomap/common.html" %}</div>
-
+<section class="u-align-center u-clearfix u-section-1" id="sec-2ed9">
+    <div class="u-clearfix u-layout-wrap u-layout-wrap-1">
+        <div class="u-layout">
+            <div class="u-layout-row">
+                <div class="u-container-style u-custom-color-3 u-layout-cell u-opacity u-opacity-55 u-size-21 u-layout-cell-1">
+                    <div class="u-container-layout u-container-layout-1">
+                        <h2 class="u-text u-text-default u-text-1">Настройки</h2>
+                        <div class="u-form u-form-1">
+                            <form method="post" style="padding: 10px; margin-bottom: 20px">
+                                {% csrf_token %}
+                                <label for="well_name">Название скважины: </label><br>
+                                <input type="text" id="well_name" name="well_name" style="width: 259px; height: 47.9px"><br><br>
+                                <div class="u-form-group u-form-select u-label-top u-form-group-1">
+                                    <label for="parameters" class="u-label">Данные по</label>
+                                    <div class="u-form-select-wrapper">
+                                        <select name="parameters" id="parameters"
+                                                class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
+                                            <option value="По дебитам">Дебитам</option>
+                                            <option value="По накопленной добыче">Накопленной добыче</option>
+                                        </select>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1"
+                                             class="u-caret">
+                                            <path fill="currentColor" d="M4 8L0 4h8z"></path>
+                                        </svg>
+                                        </div>
+                                        <hr style="height:1px; visibility:hidden;"/>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="нефть" name="нефть">
+                                        <label for="нефть">Показатели по нефти</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="газ" name="газ">
+                                        <label for="газ">Показатели по газу</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="жидкость" name="жидкость">
+                                        <label for="жидкость">Показатели по жидкости</label>
+                                    </div>
+                                    <div class="u-align-left u-form-group u-form-submit u-label-top">
+                                        <input type="submit" class="u-form-control-hidden">
+                                        <a href="{% url 'core:wells-extraction-chart' %}"
+                                           class="u-border-none u-btn u-btn-round u-btn-submit u-button-style u-hover-palette-1-dark-1 u-palette-1-base u-radius-8 u-btn-1">Построить
+                                            график<br>
+                                        </a>
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="u-container-style u-layout-cell u-size-39">
+                    <div class="u-container-layout u-container-layout-2">
+                        {% if message %}
+                        <h3 style="margin-left: 30px">{{message}}</h3>
+                        {% else %}
+                        <img src="{% get_media_prefix %}{{image_name}}" width="1100" height="587">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <footer class="u-align-center u-clearfix u-footer u-palette-3-light-2 u-footer" id="sec-4231">
     <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">

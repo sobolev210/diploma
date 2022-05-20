@@ -1,0 +1,8 @@
+{% extends "core/base_form.html" %}
+{%block title%}
+{% if object %}
+Обновление месторождения "{{object}}"
+{% else %}
+Создание месторождения
+{% endif %}
+{%endblock%}

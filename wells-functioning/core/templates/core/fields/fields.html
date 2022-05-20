@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Месторождения</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:fields-detail' object.id %}">{{ object.name}}</a></li>
+{% empty %}
+<li>Месторождения еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:field-create' %}
+{% endblock %}

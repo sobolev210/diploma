@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Кусты</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:clusters-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Кусты еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:cluster-create' %}
+{% endblock %}

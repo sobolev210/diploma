@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Насосы</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:pump-parameters-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Насосы еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:pump-parameters-create' %}
+{% endblock %}

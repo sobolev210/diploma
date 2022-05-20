@@ -26,12 +26,14 @@ class WellExtractionChart:
         ).legend(self.y_axis).get_figure()
         figure.set_figwidth(8)
         path = os.path.join(settings.MEDIA_ROOT, "chart.png")
+        print("Before saving ... ")
         figure.savefig(path)
 
     def build_chart(self) -> str:
         well_extractions = WellExtraction.objects.filter(
-            well__name=self.well_name, well__layer_id=self.layer_id
+            well__name=self.well_name, #well__layer_id=self.layer_id
         ).order_by("year")
+        print(well_extractions)
         if not well_extractions:
             return "Скважины с заданными параметрами не найдены"
         field_names = get_field_names(WellExtraction)
@@ -50,8 +52,9 @@ class GroupedWellChart:
     _extractions_expression = "extraction_notes"
     _group_by_models = {model._meta.verbose_name: model for model in [Layer, Field, Organization]}
 
-    def __init__(self, layer_id: int, field: str, group_by: str, representation: str, aggregation_type: str = None):
-        self.layer_id = layer_id
+    def __init__(self, field: str, group_by: str, representation: str, aggregation_type: str = None):
+        # layer_id: int,
+        #self.layer_id = layer_id
         self.field = field
         self.aggregation_type = aggregation_type
         self.group_by = group_by
@@ -78,7 +81,7 @@ class GroupedWellChart:
             ylabel='', title=self.get_title()).legend(
             loc='center left', bbox_to_anchor=(1, 0.8)
         ).get_figure()
-        figure.set_figwidth(8)
+        figure.set_figwidth(8.5)
         path = os.path.join(settings.MEDIA_ROOT, "chart.png")
         figure.savefig(path)
 

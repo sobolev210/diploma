@@ -1,33 +1,20 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import F
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views import View
-from django.http import HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.http import urlencode
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
-from django.db.models import F
+from django.views import View
 from django_admin_geomap import geomap_context
 
-from .models import Well, Field, Layer, WellExtraction
-from core.utils import get_field_names
+from core.models import Well, Field, Layer, WellExtraction
 from core.services.chart_service import WellExtractionChart, GroupedWellChart
+from core.utils import get_field_names
 
 
 # user and request are passed automatically to the template
 # reverse('login') - login page
 # reverse('logout') - logout page
-
-class WellListView(ListView):
-    model = Well
-    template_name = "core/wells.html"
-
-
-class WellDetailView(DetailView):
-    model = Well
-    template_name = "core/wells_detail.html"
-
 
 class WellTableView(View):
     def get(self, request):
@@ -36,8 +23,8 @@ class WellTableView(View):
         well_data = Well.objects.values().annotate(field_name=F('field__name'))
         for obj in well_data:
             obj.pop("field_id")
-
-        return render(request, "core/wells_table.html", {"columns": columns.keys(), "well_data": well_data})
+        return render(request, "core/Главная.html")
+        #return render(request, "core/wells_table.html", {"columns": columns.keys(), "well_data": well_data})
 
     def post(self, request):
         print(request["data"])
@@ -51,7 +38,8 @@ class WellTableView(View):
         #     required_fields += list(fields.values())
         #     table_columns += list(fields.keys())
         data = Well.objects.values(*required_fields)
-        return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
+        return render(request, "core/Главная.html")
+        #return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
 
 
 # Для теста, перенесу в WellTableView с другой логикой
@@ -71,8 +59,6 @@ class ExtendedWellTableView(View):
 
 class WellExtractionChartView(View):
     _layers = Layer.objects.all()
-    _fields = {**{"Количество скважин": "Количество_скважин"},
-               **get_field_names(WellExtraction, exclude_fields=["year", "record_date", ])}
 
     params = {
         "По дебитам": {
@@ -85,63 +71,66 @@ class WellExtractionChartView(View):
     options = ["нефть", "жидкость", "газ"]
 
     def get(self, request):
-        return render(request, "core/wells_chart.html", {"layers": self._layers, "fields": self._fields})
+        return render(request, "core/single_object_chart.html", {"layers": self._layers})
+        #return render(request, "core/wells_chart.html", {"layers": self._layers, "fields": self._fields})
 
     def post(self, request):
         well_name = request.POST.get("well_name")
+        if not well_name:
+            return render(request, "core/single_object_chart.html", {
+                "message": "Ошибка: не указано имя скважины.",
+                "layers": self._layers,
+            })
         layer_id = request.POST.get("layers")
+        chart_data = request.POST.get("parameters")
+        x_axis = "Год"
+        y_axis = []
+        for option, attr_name in self.params[chart_data].items():
+            if request.POST.get(option):
+                y_axis.append(attr_name)
+        if not y_axis:
+            return render(request, "core/single_object_chart.html", {
+                "message": "Ошибка: для построения графика должен быть выбран хотя бы один вид показателя.", "layers": self._layers,
+            })
+            # exception - для построения графика должен быть выбран хотя бы один параметр
+        WellExtractionChart(
+            well_name=well_name,
+            chart_type="bar",
+            x_axis=x_axis,
+            y_axis=y_axis,
+            layer_id=layer_id
+        ).build_chart()
+        return render(request, "core/single_object_chart.html", {
+            "image_name": "chart.png", "layers": self._layers,
+        })
+        # return render(request, "core/wells_chart.html", {
+        #     "image_name": "chart.png", "layers": self._layers, "fields": self._fields
+        # })
+
+
+class GroupedWellExtractionChartView(View):
+    _fields = {**{"Количество скважин": "Количество_скважин"},
+               **get_field_names(WellExtraction, exclude_fields=["year", "record_date", ])}
+
+    def get(self, request):
+        return render(request, "core/Графики-по-всей-компании.html", {"fields": self._fields})
+        #return render(request, "core/wells_chart.html", {"layers": self._layers, "fields": self._fields})
+
+    def post(self, request):
         field = request.POST.get("fields")
         group_by = request.POST.get("group_by")
         aggregation_type = request.POST.get("aggregation_type")
         representation = request.POST.get("representation")
-        if not well_name:
-            GroupedWellChart(
-                layer_id=layer_id,
-                field=field,
-                aggregation_type=aggregation_type,
-                group_by=group_by,
-                representation=representation
-            ).build_chart()
-        else:
-            #todo make chart_data dynamic
-            chart_data = "По накопленной добыче"
-            x_axis = "Год"
-            y_axis = []
-            for option, attr_name in self.params[chart_data].items():
-                if request.POST.get(option):
-                    y_axis.append(attr_name)
-            if not y_axis:
-                pass
-                # exception - для построения графика должен быть выбран хотя бы один параметр
-            WellExtractionChart(
-                well_name=well_name,
-                chart_type="bar",
-                x_axis=x_axis,
-                y_axis=y_axis,
-                layer_id=layer_id
-            ).build_chart()
-        return render(request, "core/wells_chart.html", {
-            "image_name": "chart.png", "layers": self._layers, "fields": self._fields
+        GroupedWellChart(
+            field=field,
+            aggregation_type=aggregation_type,
+            group_by=group_by,
+            representation=representation
+        ).build_chart()
+
+        return render(request, "core/Графики-по-всей-компании.html", {
+            "image_name": "chart.png", "fields": self._fields
         })
-
-
-class FieldDetailView(DetailView):
-    model = Field
-    template_name = "core/fields_detail.html"
-
-
-class WellCreateView(CreateView):
-    model = Well
-    fields = '__all__'
-    template_name = "core/well_form.html"
-    # куда редиректить после создания
-    # success_url = "wells/success-url"
-
-
-class FieldCreateView(CreateView):
-    model = Field
-    fields = '__all__'
-    template_name = "core/field_form.html"
 
 
 class ImportView(View):

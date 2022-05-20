@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Буровые растворы</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:smushes-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Буровые растворы еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:smush-create' %}
+{% endblock %}

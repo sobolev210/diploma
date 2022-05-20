@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Дочерние общества</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:organizations-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Дочерние общества еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:organization-create' %}
+{% endblock %}

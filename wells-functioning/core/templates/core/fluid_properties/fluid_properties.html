@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Свойства флюидов</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:fluid-properties-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Свойства флюидов еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:fluid-properties-create' %}
+{% endblock %}

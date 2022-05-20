@@ -1,0 +1,20 @@
+{% extends "core/base_detail.html" %}
+{% block content %}
+<h1>Скважина "{{object}}"</h1>
+<table>
+    {% for param, value in object.get_fields %}
+        <tr>
+            <td>{{ param }} : {{ value }}</td>
+        </tr>
+    {% endfor %}
+        <tr>
+             <td>Месторождение : <a href="{% url 'core:fields-detail' object.field.pk %}">{{object.field.name}}</a></td>
+        </tr>
+</table>
+{% endblock %}
+{% block update_url %}
+{% url 'core:well-update' object.id %}
+{% endblock %}
+{% block delete_url %}
+{% url 'core:well-delete' object.id %}
+{% endblock %}

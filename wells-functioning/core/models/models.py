@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django_admin_geomap import GeoItem
-
 # добавить owner
 from django.urls import reverse
+
+
+from core.utils import get_field_values
 
 
 class Well(models.Model, GeoItem):
@@ -39,6 +41,7 @@ class Well(models.Model, GeoItem):
                                 blank=True, verbose_name='Куст')
     layer = models.ForeignKey('Layer', on_delete=models.CASCADE, related_name='wells', verbose_name='Пласт')
 
+    # https://docs.djangoproject.com/en/dev/internals/contributing/writing - code/coding - style/ # model-style
     class Meta:
         verbose_name = 'Скважина'
         verbose_name_plural = 'Скважины'
@@ -66,13 +69,7 @@ class Well(models.Model, GeoItem):
 
     # https://stackoverflow.com/questions/10027298/django-detailview-template-show-display-values-of-all-fields
     def get_fields(self):
-        for field in self._meta.fields:
-            print(field.get_internal_type())
-        fields = tuple(
-            filter(lambda field: field.get_internal_type() != "ForeignKey" and field.verbose_name != "ID",
-                   self._meta.fields))
-        result = [(field.verbose_name, field.value_from_object(self)) for field in fields]
-        return result
+        return get_field_values(self)
 
 
 class Field(models.Model):
@@ -92,14 +89,10 @@ class Field(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('core:field-detail', kwargs={"pk": self.pk})
+        return reverse('core:fields-detail', kwargs={"pk": self.pk})
 
     def get_fields(self):
-        fields = tuple(
-            filter(lambda field: field.get_internal_type() != models.ForeignKey and field.verbose_name != "ID",
-                   self._meta.fields))
-        result = [(field.verbose_name, field.value_from_object(self)) for field in fields]
-        return result
+        return get_field_values(self)
 
 
 class Organization(models.Model):
@@ -107,12 +100,15 @@ class Organization(models.Model):
     description = models.TextField('Описание', null=True, blank=True)
     abbreviation = models.CharField("Аббревиатура", max_length=20, null=True, blank=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Организация'
         verbose_name_plural = 'Организации'
+
+    def __str__(self):
+        return self.name
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class WellState(models.Model):
@@ -124,12 +120,15 @@ class WellState(models.Model):
     reason = models.CharField("Причина простоя", max_length=255)
     well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='state_notes', verbose_name='Скважина')
 
-    def __str__(self):
-        return f"Состояние скважины {self.well.name} на момент {self.record_date}"
-
     class Meta:
         verbose_name = 'Состояние скважины'
         verbose_name_plural = 'Состояния скважин'
+
+    def __str__(self):
+        return f"Состояние скважины {self.well.name} на момент {self.record_date}"
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class PumpParameters(models.Model):
@@ -140,12 +139,15 @@ class PumpParameters(models.Model):
     esp_current = models.FloatField("Ток ЭЦН", max_length=50)
     well = models.OneToOneField('Well', on_delete=models.CASCADE, related_name='pump_parameters', verbose_name='Скважина')
 
-    def __str__(self):
-        return f"Насос скважины {self.well.name}"
-
     class Meta:
         verbose_name = 'Насос'
         verbose_name_plural = 'Насосы'
+
+    def __str__(self):
+        return f"Насос скважины {self.well.name}"
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class WellExtraction(models.Model):
@@ -164,12 +166,15 @@ class WellExtraction(models.Model):
     bottom_hole_pressure = models.FloatField("Забойное давление", max_length=50)
     well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='extraction_notes', verbose_name='Скважина')
 
-    def __str__(self):
-        return f"Добыча cкважины {self.well.name} за {self.year} год "
-
     class Meta:
         verbose_name = 'Добыча скважины'
         verbose_name_plural = 'Добычи скважин'
+
+    def __str__(self):
+        return f"Добыча cкважины {self.well.name} за {self.year} год "
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class CoreSample(models.Model):
@@ -185,12 +190,15 @@ class CoreSample(models.Model):
     well = models.ForeignKey('Well', on_delete=models.SET_NULL, null=True, related_name='core_samples',
                              verbose_name='Скважина')
 
-    def __str__(self):
-        return f"Керн № {self.sample_number}"
-
     class Meta:
         verbose_name = 'Керны'
         verbose_name_plural = 'Керны'
+
+    def __str__(self):
+        return f"Керн № {self.sample_number}"
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class Smush(models.Model):
@@ -204,12 +212,15 @@ class Smush(models.Model):
     sand_concentration = models.FloatField("Содержание песка", max_length=50)
     hydrogen_index = models.FloatField("Водородный показатель", max_length=50)
 
-    def __str__(self):
-        return f"Буровой раствор {self.pk}"
-
     class Meta:
         verbose_name = 'Буровой раствор'
         verbose_name_plural = 'Буровые растворы'
+
+    def __str__(self):
+        return f"Буровой раствор {self.pk}"
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class Cluster(models.Model):
@@ -217,12 +228,15 @@ class Cluster(models.Model):
     field = models.ForeignKey("Field", on_delete=models.CASCADE, related_name='clusters', verbose_name='Месторождение')
     max_deflection_of_borehole = models.FloatField("Максимальное отклонение забоя", max_length=50)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Куст'
         verbose_name_plural = 'Кусты'
+
+    def __str__(self):
+        return self.name
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class Layer(models.Model):
@@ -244,12 +258,15 @@ class Layer(models.Model):
     residual_water_content = models.FloatField("Содержание остаточной воды", max_length=50)
     bubble_point_pressure = models.FloatField("Давление насыщения", max_length=50)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Пласт'
         verbose_name_plural = 'Пласты'
+
+    def __str__(self):
+        return self.name
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class FluidProperties(models.Model):
@@ -265,12 +282,15 @@ class FluidProperties(models.Model):
     layer = models.OneToOneField('Layer', on_delete=models.CASCADE, related_name="fluid_properties",
                                  verbose_name='Пласт')
 
-    def __str__(self):
-        return f"Свойства флюидов пласта {self.layer.name}"
-
     class Meta:
         verbose_name = 'Свойства флюидов'
         verbose_name_plural = 'Свойства флюидов'
+
+    def __str__(self):
+        return f"Свойства флюидов пласта {self.layer.name}"
+
+    def get_fields(self):
+        return get_field_values(self)
 
 
 class ImportSchema(models.Model):

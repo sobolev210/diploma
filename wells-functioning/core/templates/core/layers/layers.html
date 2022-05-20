@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Пласты</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:layers-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Пласты еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:layer-create' %}
+{% endblock %}

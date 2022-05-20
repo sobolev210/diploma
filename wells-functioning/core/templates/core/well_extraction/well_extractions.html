@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Данные о добыче скважин</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:well-extractions-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Данные о добыче скважин еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:well-extractions-create' %}
+{% endblock %}

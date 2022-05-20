@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>Керны</h2>
+{% for object in object_list %}
+<li><a href="{% url 'core:core-samples-detail' object.id %}">{{ object}}</a></li>
+{% empty %}
+<li>Керны еще не созданы.</li>
+{% endfor %}
+{% endblock %}
+{% block url %}
+{% url 'core:core-sample-create' %}
+{% endblock %}

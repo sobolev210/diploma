@@ -1,0 +1,10 @@
+{% extends "core/base_delete.html" %}
+{% block content %}
+<h1>Удаление скважины</h1>
+
+<p>Вы уверены, что хотите удалить скважину "{{ well }}" ?</p>
+
+{% endblock %}
+{% block return_url %}
+{% url 'core:wells' %}
+{% endblock %}
