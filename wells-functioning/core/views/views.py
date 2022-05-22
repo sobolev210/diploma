@@ -1,10 +1,12 @@
+import pandas as pd
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
-from django.http import HttpResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views import View
+from django.core.paginator import Paginator
 from django_admin_geomap import geomap_context
 
 from core.models import Well, Field, Layer, WellExtraction
@@ -18,28 +20,49 @@ from core.utils import get_field_names
 
 class WellTableView(View):
     def get(self, request):
-        print(request)
         columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False)
-        well_data = Well.objects.values().annotate(field_name=F('field__name'))
+        well_data = Well.objects.order_by("-id").values().annotate(field_name=F('field__name'))
         for obj in well_data:
             obj.pop("field_id")
-        return render(request, "core/Главная.html")
-        #return render(request, "core/wells_table.html", {"columns": columns.keys(), "well_data": well_data})
+        paginator = Paginator(well_data, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        for obj in page_obj.object_list:
+            for key, value in obj.items():
+                if isinstance(value, float):
+                    obj[key] = round(value, 2)
+        return render(
+            request, "core/tables.html", {"columns": columns.keys(), "well_data": well_data, 'page_obj': page_obj}
+        )
 
     def post(self, request):
-        print(request["data"])
-        well_columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False)
-        list_of_chosen_models = [Field]
-        table_columns = list(well_columns.keys())
-        required_fields = list(well_columns.values())
-        # нужно добавить field__name, а не просто name
-        # for model in list_of_chosen_models:
-        #     fields = get_field_names(model=model, exclude_foreign_keys=False, exclude_ids=True)
-        #     required_fields += list(fields.values())
-        #     table_columns += list(fields.keys())
-        data = Well.objects.values(*required_fields)
-        return render(request, "core/Главная.html")
-        #return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
+        columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False, invert=True)
+        well_data = Well.objects.order_by("-id").values().annotate(field_name=F('field__name'))
+        for obj in well_data:
+            obj.pop("field_id")
+        df = pd.DataFrame(list(well_data), )
+        df.rename(columns=columns, inplace=True)
+        response = HttpResponse(headers={
+            'Content-Type': 'application/vnd.ms-excel',
+            'Content-Disposition': 'attachment; filename="file.xlsx"',
+        })
+        df.to_excel(response, index=False)
+        return response
+
+    # def post(self, request):
+    #     print(request["data"])
+    #     well_columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False)
+    #     list_of_chosen_models = [Field]
+    #     table_columns = list(well_columns.keys())
+    #     required_fields = list(well_columns.values())
+    #     #нужно добавить field__name, а не просто name
+    #     for model in list_of_chosen_models:
+    #         fields = get_field_names(model=model, exclude_foreign_keys=False, exclude_ids=True)
+    #         required_fields += list(fields.values())
+    #         table_columns += list(fields.keys())
+    #     data = Well.objects.values(*required_fields)
+    #     #return render(request, "core/Главная.html")
+    #     return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
 
 
 # Для теста, перенесу в WellTableView с другой логикой
@@ -101,11 +124,8 @@ class WellExtractionChartView(View):
             layer_id=layer_id
         ).build_chart()
         return render(request, "core/single_object_chart.html", {
-            "image_name": "chart.png", "layers": self._layers,
+            "image_name": "chart.png", "layers": self._layers, "well_name": well_name, "chart_data": chart_data
         })
-        # return render(request, "core/wells_chart.html", {
-        #     "image_name": "chart.png", "layers": self._layers, "fields": self._fields
-        # })
 
 
 class GroupedWellExtractionChartView(View):
@@ -129,7 +149,8 @@ class GroupedWellExtractionChartView(View):
         ).build_chart()
 
         return render(request, "core/Графики-по-всей-компании.html", {
-            "image_name": "chart.png", "fields": self._fields
+            "image_name": "chart.png", "fields": self._fields, "group_by": group_by, "aggregation_type": aggregation_type,
+            "field": field, "representation": representation
         })
 
 

@@ -27,8 +27,8 @@
     <meta property="og:type" content="website">
   </head>
   <body class="u-body u-xl-mode"><header class="u-clearfix u-header u-palette-3-light-2 u-header" id="sec-9501"><div class="u-clearfix u-sheet u-sheet-1">
-        <a href="https://nicepage.com" class="u-image u-logo u-image-1">
-          <img src="{% static 'images/logo.png' %}" class="u-logo-image u-logo-image-1">
+        <a href="{% url 'core:main' %}" class="u-image u-logo u-image-1">
+            <img src="{% static 'images/logo.png' %}" class="u-logo-image u-logo-image-1">
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
           <div class="menu-collapse" style="font-size: 1.25rem; letter-spacing: 0px; font-weight: 600;">
@@ -43,8 +43,8 @@
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{% url 'core:chart-choice' %}"style="padding: 10px 20px;">Графики</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{% url 'core:objects' %}" style="padding: 10px 20px;">Объекты</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{% url 'core:map' %}" style="padding: 10px 20px;">Карта</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="Таблицы.html" style="padding: 10px 20px;">Таблицы</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" style="padding: 10px 20px;">Выйти</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="{% url 'core:table' %}" style="padding: 10px 20px;">Таблицы</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" style="padding: 10px 20px;" href="{% url 'login' %}">Выйти</a>
 </li></ul>
           </div>
           <div class="u-custom-menu u-nav-container-collapse">
@@ -55,8 +55,8 @@
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:chart-choice' %}">Графики</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:objects' %}">Объекты</a>
 </li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:map' %}">Карта</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="Таблицы.html">Таблицы</a>
-</li><li class="u-nav-item"><a class="u-button-style u-nav-link">Выйти</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:table' %}">Таблицы</a>
+</li><li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'login' %}">Выйти</a>
 </li></ul>
               </div>
             </div>
@@ -78,9 +78,9 @@
                       <label for="group_by" class="u-label">Группировать по</label>
                       <div class="u-form-select-wrapper">
                         <select name="group_by" id="group_by" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-                          <option value="Пласт">Пласту</option>
-                            <option value="Месторождение">Месторождению</option>
-                            <option value="Организация">Организации</option>
+                          <option {% if group_by == "Пласт" %} selected {% endif %} value="Пласт">Пласту</option>
+                            <option {% if group_by == "Месторождение" %} selected {% endif %} value="Месторождение">Месторождению</option>
+                            <option {% if group_by == "Организация" %} selected {% endif %} value="Организация">Организации</option>
                         </select>
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
                       </div>
@@ -102,8 +102,8 @@
                       <label for="aggregation_type" class="u-label">Тип агрегации</label>
                       <div class="u-form-select-wrapper">
                         <select name="aggregation_type" id="aggregation_type" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-                          <option value="Суммировать">Сумма</option>
-                          <option value="Среднее арифметическое">Среднее арифметическое</option>
+                          <option {% if aggregation_type == "Суммировать" %} selected {% endif %} value="Суммировать">Сумма</option>
+                          <option {% if aggregation_type == "Среднее арифметическое" %} selected {% endif %} value="Среднее арифметическое">Среднее арифметическое</option>
                         </select>
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1" class="u-caret"><path fill="currentColor" d="M4 8L0 4h8z"></path></svg>
                       </div>
@@ -112,10 +112,10 @@
 
                       <div class="u-form-radio-button-wrapper">
                           <p>Отображать:</p>
-                        <input id="Проценты" type="radio" name="representation" value="Проценты">
+                        <input id="Проценты" type="radio" name="representation" value="Проценты" {% if representation == "Проценты" %} checked {% endif %}>
                         <label class="u-label" for="Проценты">Проценты</label>
                         <br>
-                        <input id="Значения" type="radio" name="representation" value="Значения">
+                        <input id="Значения" type="radio" name="representation" value="Значения" {% if representation == "Значения" %} checked {% endif %}>
                         <label class="u-label" for="Значения">Значения</label>
                         <br>
                       </div>
@@ -131,7 +131,9 @@
             </div>
             <div class="u-container-style u-layout-cell u-size-39">
               <div class="u-container-layout u-container-layout-2">
+                  {% if image_name %}
                 <img src="{% get_media_prefix %}{{image_name}}" width="1100" height="587">
+                  {% endif %}
               </div>
             </div>
           </div>

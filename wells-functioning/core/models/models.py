@@ -34,18 +34,18 @@ class Well(models.Model, GeoItem):
     comment = models.TextField("Примечание", blank=True, null=True)
     x_coordinate = models.FloatField("Координата Х", max_length=50)
     y_coordinate = models.FloatField("Координата Y", max_length=50)
-    field = models.ForeignKey('Field', on_delete=models.CASCADE, related_name='wells', verbose_name='Месторождение')
     smush = models.ForeignKey('Smush', on_delete=models.SET_NULL, related_name='wells', null=True,
                               blank=True, verbose_name='Буровой раствор')
     cluster = models.ForeignKey('Cluster', on_delete=models.SET_NULL, related_name='wells', null=True,
                                 blank=True, verbose_name='Куст')
-    layer = models.ForeignKey('Layer', on_delete=models.CASCADE, related_name='wells', verbose_name='Пласт')
+    layers = models.ManyToManyField('Layer', related_name='wells', blank=True, verbose_name="Пласты")
+    field = models.ForeignKey('Field', on_delete=models.CASCADE, related_name='wells', verbose_name='Месторождение')
 
     # https://docs.djangoproject.com/en/dev/internals/contributing/writing - code/coding - style/ # model-style
     class Meta:
         verbose_name = 'Скважина'
         verbose_name_plural = 'Скважины'
-        unique_together = ('name', 'layer',)
+        #unique_together = ('name', 'layers',)
 
     def __str__(self):
         return self.name
@@ -257,19 +257,6 @@ class Layer(models.Model):
     start_layer_pressure = models.FloatField("Начальное пластовое давление", max_length=50)
     residual_water_content = models.FloatField("Содержание остаточной воды", max_length=50)
     bubble_point_pressure = models.FloatField("Давление насыщения", max_length=50)
-
-    class Meta:
-        verbose_name = 'Пласт'
-        verbose_name_plural = 'Пласты'
-
-    def __str__(self):
-        return self.name
-
-    def get_fields(self):
-        return get_field_values(self)
-
-
-class FluidProperties(models.Model):
     gas_factor = models.FloatField("Газовый фактор", max_length=50)
     water_dynamic_viscosity = models.FloatField("Динамическая вязкость воды", max_length=50)
     oil_dynamic_viscosity = models.FloatField("Динамическая вязкость нефти", max_length=50)
@@ -279,15 +266,13 @@ class FluidProperties(models.Model):
     gas_density = models.FloatField("Плотность газа", max_length=50)
     formation_volume_factor_for_water = models.FloatField("Объемный коэффициент воды", max_length=50)
     formation_volume_factor_for_oil = models.FloatField("Объемный коэффициент нефти", max_length=50)
-    layer = models.OneToOneField('Layer', on_delete=models.CASCADE, related_name="fluid_properties",
-                                 verbose_name='Пласт')
 
     class Meta:
-        verbose_name = 'Свойства флюидов'
-        verbose_name_plural = 'Свойства флюидов'
+        verbose_name = 'Пласт'
+        verbose_name_plural = 'Пласты'
 
     def __str__(self):
-        return f"Свойства флюидов пласта {self.layer.name}"
+        return self.name
 
     def get_fields(self):
         return get_field_values(self)

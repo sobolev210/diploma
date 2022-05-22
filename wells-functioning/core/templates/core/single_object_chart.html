@@ -30,7 +30,7 @@
 <body class="u-body u-xl-mode">
 <header class="u-clearfix u-header u-palette-3-light-2 u-header" id="sec-9501">
     <div class="u-clearfix u-sheet u-sheet-1">
-        <a href="https://nicepage.com" class="u-image u-logo u-image-1">
+        <a href="{% url 'core:main' %}" class="u-image u-logo u-image-1">
             <img src="{% static 'images/logo.png' %}" class="u-logo-image u-logo-image-1">
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
@@ -70,11 +70,11 @@
                     </li>
                     <li class="u-nav-item"><a
                             class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                            href="Таблицы.html" style="padding: 10px 20px;">Таблицы</a>
+                            href="{% url 'core:table' %}" style="padding: 10px 20px;">Таблицы</a>
                     </li>
                     <li class="u-nav-item"><a
                             class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base"
-                            style="padding: 10px 20px;">Выйти</a>
+                            style="padding: 10px 20px;" href="{% url 'login' %}">Выйти</a>
                     </li>
                 </ul>
             </div>
@@ -92,9 +92,9 @@
                             </li>
                             <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:map' %}">Карта</a>
                             </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="Таблицы.html">Таблицы</a>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:table' %}">Таблицы</a>
                             </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link">Выйти</a>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'login' %}">Выйти</a>
                             </li>
                         </ul>
                     </div>
@@ -115,14 +115,14 @@
                             <form method="post" style="padding: 10px; margin-bottom: 20px">
                                 {% csrf_token %}
                                 <label for="well_name">Название скважины: </label><br>
-                                <input type="text" id="well_name" name="well_name" style="width: 259px; height: 47.9px"><br><br>
+                                <input type="text" id="well_name" name="well_name" {% if well_name %} value="{{well_name}}" {% endif %} style="width: 259px; height: 47.9px"><br><br>
                                 <div class="u-form-group u-form-select u-label-top u-form-group-1">
                                     <label for="parameters" class="u-label">Данные по</label>
                                     <div class="u-form-select-wrapper">
                                         <select name="parameters" id="parameters"
                                                 class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
-                                            <option value="По дебитам">Дебитам</option>
-                                            <option value="По накопленной добыче">Накопленной добыче</option>
+                                            <option value="По дебитам" {% if chart_data == "По дебитам" %} selected {% endif %}>Дебитам</option>
+                                            <option value="По накопленной добыче" {% if chart_data == "По накопленной добыче" %} selected {% endif %}>Накопленной добыче</option>
                                         </select>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" version="1"
                                              class="u-caret">
@@ -132,15 +132,15 @@
                                         <hr style="height:1px; visibility:hidden;"/>
                                     </div>
                                     <div>
-                                        <input type="checkbox" id="нефть" name="нефть">
+                                        <input type="checkbox" id="нефть" name="нефть" checked>
                                         <label for="нефть">Показатели по нефти</label>
                                     </div>
                                     <div>
-                                        <input type="checkbox" id="газ" name="газ">
+                                        <input type="checkbox" id="газ" name="газ" checked>
                                         <label for="газ">Показатели по газу</label>
                                     </div>
                                     <div>
-                                        <input type="checkbox" id="жидкость" name="жидкость">
+                                        <input type="checkbox" id="жидкость" name="жидкость" checked>
                                         <label for="жидкость">Показатели по жидкости</label>
                                     </div>
                                     <div class="u-align-left u-form-group u-form-submit u-label-top">
@@ -159,7 +159,9 @@
                         {% if message %}
                         <h3 style="margin-left: 30px">{{message}}</h3>
                         {% else %}
-                        <img src="{% get_media_prefix %}{{image_name}}" width="1100" height="587">
+                        {% if image_name %}
+                        <img src="{% get_media_prefix %}{{image_name}}" width="978" height="587">
+                        {% endif %}
                         {% endif %}
                     </div>
                 </div>

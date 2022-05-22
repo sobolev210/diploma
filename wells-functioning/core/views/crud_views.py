@@ -13,6 +13,7 @@ class WellListView(ListView):
     model = Well
     template_name = "core/wells/wells.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class WellDetailView(DetailView):
@@ -50,6 +51,7 @@ class FieldListView(ListView):
     model = Field
     template_name = "core/fields/fields.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class FieldDetailView(DetailView):
@@ -80,6 +82,7 @@ class OrganizationListView(ListView):
     model = Organization
     template_name = "core/organizations/organizations.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class OrganizationDetailView(DetailView):
@@ -107,6 +110,7 @@ class WellStateListView(ListView):
     model = WellState
     template_name = "core/well_state/well_states.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class WellStateDetailView(DetailView):
@@ -135,6 +139,7 @@ class PumpParametersListView(ListView):
     model = PumpParameters
     template_name = "core/pump_parameters/pump_parameters.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class PumpParametersDetailView(DetailView):
@@ -163,6 +168,7 @@ class WellExtractionListView(ListView):
     model = WellExtraction
     template_name = "core/well_extraction/well_extractions.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class WellExtractionDetailView(DetailView):
@@ -191,6 +197,7 @@ class CoreSampleListView(ListView):
     model = CoreSample
     template_name = "core/core_samples/core_samples.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class CoreSampleDetailView(DetailView):
@@ -219,6 +226,7 @@ class SmushListView(ListView):
     model = Smush
     template_name = "core/smushes/smushes.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class SmushDetailView(DetailView):
@@ -246,6 +254,7 @@ class ClusterListView(ListView):
     model = Cluster
     template_name = "core/clusters/clusters.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class ClusterDetailView(DetailView):
@@ -273,6 +282,7 @@ class LayerListView(ListView):
     model = Layer
     template_name = "core/layers/layers.html"
     paginate_by = settings.DEFAULT_PAGE_SIZE
+    ordering = ["-id"]
 
 
 class LayerDetailView(DetailView):
@@ -294,34 +304,3 @@ class LayerUpdateView(UpdateView):
 class LayerDeleteView(UpdateView):
     model = Layer
     template_name = "core/layers/layer_delete.html"
-
-
-class FluidPropertiesListView(ListView):
-    model = FluidProperties
-    template_name = "core/fluid_properties/fluid_properties.html"
-    paginate_by = settings.DEFAULT_PAGE_SIZE
-
-
-class FluidPropertiesDetailView(DetailView):
-    model = FluidProperties
-    template_name = "core/fluid_properties/fluid_properties_detail.html"
-
-
-class FluidPropertiesCreateView(CreateView):
-    model = FluidProperties
-    fields = '__all__'
-    template_name = "core/fluid_properties/fluid_properties_create.html"
-
-
-class FluidPropertiesUpdateView(UpdateView):
-    model = FluidProperties
-    template_name = "core/fluid_properties/fluid_properties_update.html"
-
-
-class FluidPropertiesDeleteView(UpdateView):
-    model = FluidProperties
-    template_name = "core/fluid_properties/fluid_properties_delete.html"
-
-
-
-

@@ -26,14 +26,12 @@ class WellExtractionChart:
         ).legend(self.y_axis).get_figure()
         figure.set_figwidth(8)
         path = os.path.join(settings.MEDIA_ROOT, "chart.png")
-        print("Before saving ... ")
         figure.savefig(path)
 
     def build_chart(self) -> str:
         well_extractions = WellExtraction.objects.filter(
             well__name=self.well_name, #well__layer_id=self.layer_id
         ).order_by("year")
-        print(well_extractions)
         if not well_extractions:
             return "Скважины с заданными параметрами не найдены"
         field_names = get_field_names(WellExtraction)
@@ -79,7 +77,7 @@ class GroupedWellChart:
             autopct=lambda x:
             f'{round(x, 2) if self.representation == "Проценты" else self.round_value(x / 100 * float(df.sum()))}{self.symbol}',
             ylabel='', title=self.get_title()).legend(
-            loc='center left', bbox_to_anchor=(1, 0.8)
+            loc='center left', bbox_to_anchor=(-0.5, 0.8)
         ).get_figure()
         figure.set_figwidth(8.5)
         path = os.path.join(settings.MEDIA_ROOT, "chart.png")

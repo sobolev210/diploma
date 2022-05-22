@@ -49,11 +49,6 @@ class LayerAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(FluidProperties)
-class FluidPropertiesAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(ImportSchema)
 class ImportSchemaAdmin(admin.ModelAdmin):
     pass

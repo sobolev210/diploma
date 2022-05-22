@@ -85,7 +85,6 @@ class Command(BaseCommand):
                 license_block="Снежный",
                 mining_method=random.choice(["фонтанный", "компрессорный", "насосный"]),
                 field=field,
-                layer=layer,
                 x_coordinate=field.x_coordinate + random.uniform(-0.07, 0.07),
                 y_coordinate=field.y_coordinate + random.uniform(-0.07, 0.07)
             )
@@ -94,16 +93,15 @@ class Command(BaseCommand):
             params["start_date_of_drilling"], params["completion_date_of_drilling"], params[
                 "service_date"] = self.get_dates_of_drilling()
             params["purpose"], params["nature_of_work"] = self.get_purpose_and_nature_of_work()
-            wells.append(Well(**params))
-
-        saved_wells = []
-        for well in wells:
+            well = Well(**params)
             try:
                 well.save()
-                saved_wells.append(well)
+                well.layers.set([layer])
+                well.save()
+                wells.append(well)
             except IntegrityError:
                 print(f"Скважина с именем {well.name} уже существует")
-        return saved_wells
+        return wells
 
     def create_well_state_data(self, well: Well) -> WellState:
         pass
@@ -134,7 +132,7 @@ class Command(BaseCommand):
                 oil_rate=oil_output_t_inc / 365,
                 liquid_rate=liquid_output_m3_inc / 365,
                 gas_rate=gas_output_m3_inc / 365,
-                bottom_hole_pressure=well.layer.layer_pressure - random.uniform(1, 3.5)
+                bottom_hole_pressure=well.layers.first().layer_pressure - random.uniform(1, 3.5)
             )
 
     def handle(self, *args, **options):
