@@ -31,6 +31,8 @@ class WellTableView(View):
             for key, value in obj.items():
                 if isinstance(value, float):
                     obj[key] = round(value, 2)
+                elif value is None:
+                    obj[key] = "-"
         return render(
             request, "core/tables.html", {"columns": columns.keys(), "well_data": well_data, 'page_obj': page_obj}
         )
@@ -44,9 +46,9 @@ class WellTableView(View):
         df.rename(columns=columns, inplace=True)
         response = HttpResponse(headers={
             'Content-Type': 'application/vnd.ms-excel',
-            'Content-Disposition': 'attachment; filename="file.xlsx"',
+            'Content-Disposition': 'attachment; filename="result.xlsx"',
         })
-        df.to_excel(response, index=False)
+        df.to_excel(response, index=False, sheet_name="Данные по скважинам")
         return response
 
     # def post(self, request):
@@ -116,13 +118,18 @@ class WellExtractionChartView(View):
                 "message": "Ошибка: для построения графика должен быть выбран хотя бы один вид показателя.", "layers": self._layers,
             })
             # exception - для построения графика должен быть выбран хотя бы один параметр
-        WellExtractionChart(
+        message = WellExtractionChart(
             well_name=well_name,
             chart_type="bar",
             x_axis=x_axis,
             y_axis=y_axis,
             layer_id=layer_id
         ).build_chart()
+        if message:
+            return render(request, "core/single_object_chart.html", {
+                "message": message,
+                "layers": self._layers,
+            })
         return render(request, "core/single_object_chart.html", {
             "image_name": "chart.png", "layers": self._layers, "well_name": well_name, "chart_data": chart_data
         })
@@ -140,7 +147,7 @@ class GroupedWellExtractionChartView(View):
         field = request.POST.get("fields")
         group_by = request.POST.get("group_by")
         aggregation_type = request.POST.get("aggregation_type")
-        representation = request.POST.get("representation")
+        representation = request.POST.get("representation", "Проценты")
         GroupedWellChart(
             field=field,
             aggregation_type=aggregation_type,

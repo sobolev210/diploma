@@ -19,39 +19,6 @@ class Command(BaseCommand):
                                "специальная": ["Пьезометрическая", "Оценочная", "Разведочная", "Наблюдатетельная"],
                                "вспомогательная": ["Водозаборная", "Поглощающая"]}
 
-    def create_field(self) -> Field:
-        field = Field.objects.filter(name="Снежное").first()
-        if field:
-            return field
-        return Field.objects.create(
-            name="Снежное",
-            field_type="нефтегазовое"
-        )
-
-    def create_layer(self) -> Layer:
-        layer = Layer.objects.filter(name="Ю1").first()
-        if layer:
-            return layer
-        return Layer.objects.create(
-            name="Ю1",
-            reservoir_type='поровый',
-            layer_pressure=17.8,  # МПа
-            bed_top_occurrence_depth=670,  # м
-            bed_floor_occurrence_depth=1360,  # м
-            net_oil_thickness=13.9,  # м
-            full_porosity_ratio=0.18,
-            penetrability=43.6,
-            fluid_content="нефтенасыщенный",
-            cluster_age=120000,
-            cluster_toughness=1.6,
-            oil_saturation_factor=0.35,
-            gas_saturation_factor=0.24,
-            water_saturation_factor=0.14,
-            start_layer_pressure=20,
-            residual_water_content=0.07,
-            bubble_point_pressure=18.4,
-        )
-
     def get_dates_of_drilling(self) -> Tuple[date, date, date]:
         start_date = date(2000, 1, 1)
         available_range = (date(datetime.now().year - 1, 12, 31) - start_date).days

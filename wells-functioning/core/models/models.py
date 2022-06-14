@@ -7,9 +7,10 @@ from django.urls import reverse
 
 
 from core.utils import get_field_values
+from core.models.utils import GetFieldsMixin
 
 
-class Well(models.Model, GeoItem):
+class Well(models.Model, GeoItem, GetFieldsMixin):
 
     @property
     def geomap_latitude(self):
@@ -41,7 +42,7 @@ class Well(models.Model, GeoItem):
     layers = models.ManyToManyField('Layer', related_name='wells', blank=True, verbose_name="Пласты")
     field = models.ForeignKey('Field', on_delete=models.CASCADE, related_name='wells', verbose_name='Месторождение')
 
-    # https://docs.djangoproject.com/en/dev/internals/contributing/writing - code/coding - style/ # model-style
+    # https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/ - code/coding - style/ # model-style
     class Meta:
         verbose_name = 'Скважина'
         verbose_name_plural = 'Скважины'
@@ -68,11 +69,9 @@ class Well(models.Model, GeoItem):
     #     return result
 
     # https://stackoverflow.com/questions/10027298/django-detailview-template-show-display-values-of-all-fields
-    def get_fields(self):
-        return get_field_values(self)
 
 
-class Field(models.Model):
+class Field(models.Model, GetFieldsMixin):
     name = models.CharField("Название месторождения", max_length=255, unique=True)
     field_type = models.CharField("Тип месторождения", max_length=255)
     x_coordinate = models.FloatField("Координата Х", max_length=50)
@@ -91,9 +90,6 @@ class Field(models.Model):
     def get_absolute_url(self):
         return reverse('core:fields-detail', kwargs={"pk": self.pk})
 
-    def get_fields(self):
-        return get_field_values(self)
-
 
 class Organization(models.Model):
     name = models.CharField("Название организации", max_length=255, unique=True)
@@ -107,18 +103,16 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class WellState(models.Model):
+class WellState(models.Model, GetFieldsMixin):
     record_date = models.DateField("Дата создания записи", auto_now_add=True)
     status = models.CharField("Текущий статус", max_length=255)
     uptime = models.FloatField("Время работы", max_length=10)
     accumulation_time = models.FloatField("Время накопления", max_length=10)
     downtime = models.FloatField("Время простоя", max_length=10)
     reason = models.CharField("Причина простоя", max_length=255)
-    well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='state_notes', verbose_name='Скважина')
+    well = models.ForeignKey('Well', on_delete=models.CASCADE,
+                             related_name='state_notes', verbose_name='Скважина')
 
     class Meta:
         verbose_name = 'Состояние скважины'
@@ -127,13 +121,11 @@ class WellState(models.Model):
     def __str__(self):
         return f"Состояние скважины {self.well.name} на момент {self.record_date}"
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class PumpParameters(models.Model):
+class PumpParameters(models.Model, GetFieldsMixin):
     pump_parameters_measurement_date = models.DateField("Дата измерения параметров насоса")
     pump_type = models.CharField("Вид насоса", max_length=255)
+    pump_state = models.CharField("Состояние насоса", max_length=255)
     esp_frequency = models.FloatField("Частота ЭЦН", max_length=50)
     esp_pressure = models.FloatField("Напор ЭЦН", max_length=50)
     esp_current = models.FloatField("Ток ЭЦН", max_length=50)
@@ -146,11 +138,8 @@ class PumpParameters(models.Model):
     def __str__(self):
         return f"Насос скважины {self.well.name}"
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class WellExtraction(models.Model):
+class WellExtraction(models.Model, GetFieldsMixin):
     year = models.IntegerField("Год")
     record_date = models.DateField("Дата создания записи", auto_now_add=True)
     oil_output_t = models.FloatField("Добыча нефти, т", max_length=50)
@@ -173,11 +162,8 @@ class WellExtraction(models.Model):
     def __str__(self):
         return f"Добыча cкважины {self.well.name} за {self.year} год "
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class CoreSample(models.Model):
+class CoreSample(models.Model, GetFieldsMixin):
     sample_number = models.PositiveIntegerField("Номер образца", unique=True)
     sampling_date = models.DateField("Дата отбора керна")
     sampling_method = models.CharField("Способ отбора керна", max_length=255)
@@ -197,11 +183,8 @@ class CoreSample(models.Model):
     def __str__(self):
         return f"Керн № {self.sample_number}"
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class Smush(models.Model):
+class Smush(models.Model, GetFieldsMixin):
     smush_type = models.CharField("Вид бурового раствора", max_length=255)
     density_of_drilling_liquid = models.FloatField("Плотность промывочных жидкостей", max_length=50)
     viscosity = models.FloatField("Вязкость", max_length=50)
@@ -219,11 +202,8 @@ class Smush(models.Model):
     def __str__(self):
         return f"Буровой раствор {self.pk}"
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class Cluster(models.Model):
+class Cluster(models.Model, GetFieldsMixin):
     name = models.CharField('Название куста', max_length=255)
     field = models.ForeignKey("Field", on_delete=models.CASCADE, related_name='clusters', verbose_name='Месторождение')
     max_deflection_of_borehole = models.FloatField("Максимальное отклонение забоя", max_length=50)
@@ -235,11 +215,8 @@ class Cluster(models.Model):
     def __str__(self):
         return self.name
 
-    def get_fields(self):
-        return get_field_values(self)
 
-
-class Layer(models.Model):
+class Layer(models.Model, GetFieldsMixin):
     name = models.CharField('Название пласта', max_length=255)
     reservoir_type = models.CharField('Тип коллектора', max_length=255)
     layer_pressure = models.FloatField("Пластовое давление", max_length=50)
@@ -257,15 +234,15 @@ class Layer(models.Model):
     start_layer_pressure = models.FloatField("Начальное пластовое давление", max_length=50)
     residual_water_content = models.FloatField("Содержание остаточной воды", max_length=50)
     bubble_point_pressure = models.FloatField("Давление насыщения", max_length=50)
-    gas_factor = models.FloatField("Газовый фактор", max_length=50)
-    water_dynamic_viscosity = models.FloatField("Динамическая вязкость воды", max_length=50)
-    oil_dynamic_viscosity = models.FloatField("Динамическая вязкость нефти", max_length=50)
-    gas_dynamic_viscosity = models.FloatField("Динамическая вязкость газа", max_length=50)
-    water_density = models.FloatField("Плотность воды", max_length=50)
-    oil_density = models.FloatField("Плотность нефти", max_length=50)
-    gas_density = models.FloatField("Плотность газа", max_length=50)
-    formation_volume_factor_for_water = models.FloatField("Объемный коэффициент воды", max_length=50)
-    formation_volume_factor_for_oil = models.FloatField("Объемный коэффициент нефти", max_length=50)
+    gas_factor = models.FloatField("Газовый фактор", max_length=50, null=True)
+    water_dynamic_viscosity = models.FloatField("Динамическая вязкость воды", max_length=50, null=True)
+    oil_dynamic_viscosity = models.FloatField("Динамическая вязкость нефти", max_length=50, null=True)
+    gas_dynamic_viscosity = models.FloatField("Динамическая вязкость газа", max_length=50, null=True)
+    water_density = models.FloatField("Плотность воды", max_length=50, null=True)
+    oil_density = models.FloatField("Плотность нефти", max_length=50, null=True)
+    gas_density = models.FloatField("Плотность газа", max_length=50, null=True)
+    formation_volume_factor_for_water = models.FloatField("Объемный коэффициент воды", max_length=50, null=True)
+    formation_volume_factor_for_oil = models.FloatField("Объемный коэффициент нефти", max_length=50, null=True)
 
     class Meta:
         verbose_name = 'Пласт'
@@ -273,9 +250,6 @@ class Layer(models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_fields(self):
-        return get_field_values(self)
 
 
 class ImportSchema(models.Model):

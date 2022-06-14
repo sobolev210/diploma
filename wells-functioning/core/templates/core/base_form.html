@@ -12,10 +12,10 @@
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="Скважины">
+    <meta name="keywords" content="Объекты">
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
-    <title>Создание объекта</title>
+    <title>Объекты</title>
     <link rel="stylesheet" href="{% static 'css/nicepage.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'css/Создание-объекта.css' %}" media="screen">
     <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>
@@ -29,17 +29,17 @@
         "@context": "http://schema.org",
         "@type": "Organization",
         "name": "",
-        "logo": "{% static 'images/logo.png' %}"
+        "logo": "{% static 'images/logo_new.png' %}"
     }</script>
     <meta name="theme-color" content="#478ac9">
-    <meta property="og:title" content="Таблицы">
+    <meta property="og:title" content="Объекты">
     <meta property="og:type" content="website">
 </head>
 <body class="u-body u-xl-mode">
 <header class="u-clearfix u-header u-palette-3-light-2 u-header" id="sec-9501">
     <div class="u-clearfix u-sheet u-sheet-1">
-        <a href="{% url 'core:main' %}" class="u-image u-logo u-image-1">
-            <img src="{% static 'images/logo.png' %}" class="u-logo-image u-logo-image-1">
+        <a href="{% url 'core:main' %}">
+            <img style="height:32px; width:160px; margin-top: 10px;" class="logos" src="{% static 'images/drawn_logo.png' %}" >
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
             <div class="menu-collapse" style="font-size: 1.25rem; letter-spacing: 0px; font-weight: 600;">
@@ -120,7 +120,7 @@
                     <div class="u-container-style u-layout-cell u-left-cell u-size-30 u-size-xs-60 u-layout-cell-1"
                          src="">
                         <div class="u-container-layout u-valign-top u-container-layout-1">
-                            <h2 class="u-align-center u-text u-text-default u-text-1">{%block title%}{%endblock%}</h2>
+                            <h2 class="u-text u-text-default u-text-1">{%block title%}{%endblock%}</h2>
                             <div class="u-form u-form-1">
                                 <form method="POST" style="padding: 10px" class="label">
                                     {% csrf_token %}

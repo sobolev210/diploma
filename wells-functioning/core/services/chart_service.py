@@ -1,8 +1,9 @@
 import os
 
 import pandas as pd
+from typing import Optional, List
 from django.conf import settings
-from django.db.models import Count, Sum, Avg
+from django.db.models import Count, Sum, Avg, QuerySet
 
 from core.models import WellExtraction, Layer, Field, Organization
 from core.utils import get_field_names
@@ -17,7 +18,7 @@ class WellExtractionChart:
         self.x_axis = x_axis
         self.y_axis = y_axis
 
-    def plot_figure(self, x_field, y_fields, objects):
+    def plot_figure(self, x_field: str, y_fields: List[str], objects: QuerySet) -> None:
         df = pd.DataFrame(objects.values(*[x_field, *y_fields]))
         figure = df.plot(
             kind="bar",
@@ -28,17 +29,16 @@ class WellExtractionChart:
         path = os.path.join(settings.MEDIA_ROOT, "chart.png")
         figure.savefig(path)
 
-    def build_chart(self) -> str:
+    def build_chart(self) -> Optional[str]:
         well_extractions = WellExtraction.objects.filter(
-            well__name=self.well_name, #well__layer_id=self.layer_id
+            well__name=self.well_name,
         ).order_by("year")
         if not well_extractions:
-            return "Скважины с заданными параметрами не найдены"
+            return "Скважины с заданным названием не найдены"
         field_names = get_field_names(WellExtraction)
         x_field = field_names.get(self.x_axis)
         y_fields = [field_names.get(attr_name) for attr_name in self.y_axis]
         self.plot_figure(x_field=x_field, y_fields=y_fields, objects=well_extractions)
-        return "chart.png"
 
 
 class GroupedWellChart:
@@ -51,8 +51,6 @@ class GroupedWellChart:
     _group_by_models = {model._meta.verbose_name: model for model in [Layer, Field, Organization]}
 
     def __init__(self, field: str, group_by: str, representation: str, aggregation_type: str = None):
-        # layer_id: int,
-        #self.layer_id = layer_id
         self.field = field
         self.aggregation_type = aggregation_type
         self.group_by = group_by
@@ -87,7 +85,7 @@ class GroupedWellChart:
         aggregation_class = self.aggregation_methods.get(self.aggregation_type, Sum)
         return aggregation_class(attr_expression)
 
-    def build_chart(self) -> str:
+    def build_chart(self) -> None:
         model = self._group_by_models.get(self.group_by)
         # Выражение для получения скважин
         well_expression = self._expressions.get(self.group_by)
@@ -101,4 +99,3 @@ class GroupedWellChart:
                 )}
             ).values_list(new_field_name, "name")
         self.plot_figure(data=data)
-        return "chart.png"

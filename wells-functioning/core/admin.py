@@ -1,7 +1,7 @@
 from django.contrib import admin
 from core.models import *
 
-admin.site.site_header = "Администрирование ТрансГазНефть"
+admin.site.site_header = "Администрирование Нефть и газ"
 
 
 @admin.register(Well)
@@ -49,16 +49,16 @@ class LayerAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ImportSchema)
-class ImportSchemaAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(ImportSchemaAttribute)
-class ImportSchemaAttributeAdmin(admin.ModelAdmin):
-    list_display = [
-        "column_position",
-        "type_name",
-        "attr_name",
-        "import_schema"
-    ]
+# @admin.register(ImportSchema)
+# class ImportSchemaAdmin(admin.ModelAdmin):
+#     pass
+#
+#
+# @admin.register(ImportSchemaAttribute)
+# class ImportSchemaAttributeAdmin(admin.ModelAdmin):
+#     list_display = [
+#         "column_position",
+#         "type_name",
+#         "attr_name",
+#         "import_schema"
+#     ]
