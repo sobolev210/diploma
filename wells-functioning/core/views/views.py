@@ -1,12 +1,9 @@
 import pandas as pd
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F
-from django.http import HttpResponse, FileResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.utils.http import urlencode
-from django.views import View
 from django.core.paginator import Paginator
+from django.db.models import F
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views import View
 from django_admin_geomap import geomap_context
 
 from core.models import Well, Field, Layer, WellExtraction
@@ -57,7 +54,6 @@ class WellTableView(View):
     #     list_of_chosen_models = [Field]
     #     table_columns = list(well_columns.keys())
     #     required_fields = list(well_columns.values())
-    #     #нужно добавить field__name, а не просто name
     #     for model in list_of_chosen_models:
     #         fields = get_field_names(model=model, exclude_foreign_keys=False, exclude_ids=True)
     #         required_fields += list(fields.values())
@@ -67,17 +63,12 @@ class WellTableView(View):
     #     return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
 
 
-# Для теста, перенесу в WellTableView с другой логикой
 class ExtendedWellTableView(View):
     def get(self, request):
-        print(request)
         well_columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False)
         field_columns = get_field_names(model=Field, exclude_foreign_keys=False, exclude_ids=True)
         needed_columns = [f"field__{name}" for name in field_columns.values()]
-        # print(well_columns)
-        # print(field_columns)
         data = Well.objects.values(*well_columns.values(), *needed_columns)  # .annotate(field_name=F('field__name'))
-        # print(data)
         return render(request, "core/wells_table.html",
                       {"columns": list(well_columns.keys()) + list(field_columns.keys()), "well_data": data})
 
@@ -97,7 +88,6 @@ class WellExtractionChartView(View):
 
     def get(self, request):
         return render(request, "core/single_object_chart.html", {"layers": self._layers})
-        #return render(request, "core/wells_chart.html", {"layers": self._layers, "fields": self._fields})
 
     def post(self, request):
         well_name = request.POST.get("well_name")
@@ -141,7 +131,6 @@ class GroupedWellExtractionChartView(View):
 
     def get(self, request):
         return render(request, "core/Графики-по-всей-компании.html", {"fields": self._fields})
-        #return render(request, "core/wells_chart.html", {"layers": self._layers, "fields": self._fields})
 
     def post(self, request):
         field = request.POST.get("fields")
@@ -159,51 +148,6 @@ class GroupedWellExtractionChartView(View):
             "image_name": "chart.png", "fields": self._fields, "group_by": group_by, "aggregation_type": aggregation_type,
             "field": field, "representation": representation
         })
-
-
-class ImportView(View):
-    def post(self, request):
-        pass
-
-
-class OpenView(View):
-    def get(self, request):
-        return render(request, 'core/main.html')
-
-
-class ApereoView(View):
-    def get(self, request):
-        return render(request, 'core/main.html')
-
-
-class ManualProtect(View):
-    def get(self, request):
-        if not request.user.is_authenticated:
-            loginurl = reverse('login') + '?' + urlencode({'next': request.path})
-            return redirect(loginurl)
-        return render(request, 'core/main.html')
-
-
-class ProtectView(LoginRequiredMixin, View):
-    def get(self, request):
-        return render(request, 'core/main.html')
-
-
-class DumpPython(View):
-    def get(self, req):
-        resp = "<pre>\nUser Data in Python:\n\n"
-        resp += "Login url: " + reverse('login') + "\n"
-        resp += "Logout url: " + reverse('logout') + "\n\n"
-        if req.user.is_authenticated:
-            resp += "User: " + req.user.username + "\n"
-            resp += "Email: " + req.user.email + "\n"
-        else:
-            resp += "User is not logged in\n"
-
-        resp += "\n"
-        resp += "</pre>\n"
-        resp += """<a href="/core">Go back</a>"""
-        return HttpResponse(resp)
 
 
 #https://github.com/vb64/django.admin.geomap

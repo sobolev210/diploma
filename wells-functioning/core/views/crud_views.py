@@ -1,4 +1,3 @@
-from django import forms
 from django.conf import settings
 from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
@@ -6,7 +5,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 
 from core.models import *
-from core.forms import WellForm, WellExtractionForm, WellStateForm, PumpParametersForm, CoreSampleForm
+from core.views.utils import DefaultCreateMixin
+from core.forms import WellForm, WellExtractionForm, WellStateForm, PumpParametersForm, CoreSampleForm, OrganizationForm
 
 
 class WellListView(ListView):
@@ -20,17 +20,11 @@ class WellDetailView(DetailView):
     model = Well
     template_name = "core/wells/wells_detail.html"
 
-#todo вместо object_create.html и object_update.html использовать object_form.html, добавить fields в UpdateView и DeleteView
-#todo для удаления добавить template object_delete.html
-#todo поменять UpdateView на DeleteView для эндпоинтов с удалением
-class WellCreateView(CreateView):
+
+class WellCreateView(DefaultCreateMixin, CreateView):
     model = Well
     form_class = WellForm
-    #template_name = "core/wells/Создание-объекта.html"
-    template_name = "core/wells/well_form.html"
-    #fields = '__all__'
-
-    # куда редиректить после создания
+    # redirect after creation
     # success_url = "wells/success-url"
 
 
@@ -43,8 +37,15 @@ class WellUpdateView(UpdateView):
 class WellDeleteView(DeleteView):
     model = Well
     fields = '__all__'
-    template_name = "core/wells/well_delete.html"
+    template_name = "core/base_delete.html"
     success_url = reverse_lazy('core:wells')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "скважину", "return_url": reverse_lazy('core:wells')
+        })
+        return context
 
 
 class FieldListView(ListView):
@@ -59,25 +60,31 @@ class FieldDetailView(DetailView):
     template_name = "core/fields/fields_detail.html"
 
 
-class FieldCreateView(CreateView):
+class FieldCreateView(DefaultCreateMixin, CreateView):
     model = Field
     fields = '__all__'
-    template_name = "core/fields/field_form.html"
 
 
 class FieldUpdateView(UpdateView):
     model = Field
     fields = '__all__'
-    template_name = "core/fields/field_form.html"
+    template_name = "core/base_form.html"
 
 
 class FieldDeleteView(DeleteView):
     model = Field
     fields = '__all__'
-    template_name = "core/fields/field_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:fields')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "месторождение", "return_url": reverse_lazy('core:fields')
+        })
+        return context
 
 
-# добавить шаблон
 class OrganizationListView(ListView):
     model = Organization
     template_name = "core/organizations/organizations.html"
@@ -90,20 +97,28 @@ class OrganizationDetailView(DetailView):
     template_name = "core/organizations/organizations_detail.html"
 
 
-class OrganizationCreateView(CreateView):
+class OrganizationCreateView(DefaultCreateMixin, CreateView):
     model = Organization
-    fields = '__all__'
-    template_name = "core/organizations/organization_create.html"
+    form_class = OrganizationForm
 
 
 class OrganizationUpdateView(UpdateView):
     model = Organization
-    template_name = "core/organizations/organization_update.html"
+    form_class = OrganizationForm
+    template_name = "core/base_form.html"
 
 
-class OrganizationDeleteView(UpdateView):
+class OrganizationDeleteView(DeleteView):
     model = Organization
-    template_name = "core/organizations/organization_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:organizations')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "организацию", "return_url": reverse_lazy('core:organizations')
+        })
+        return context
 
 
 class WellStateListView(ListView):
@@ -115,24 +130,32 @@ class WellStateListView(ListView):
 
 class WellStateDetailView(DetailView):
     model = WellState
-    template_name = "core/well_state/well_states_detail.html"
+    template_name = "core/base_detail.html"
 
 
-class WellStateCreateView(CreateView):
+class WellStateCreateView(DefaultCreateMixin, CreateView):
     model = WellState
-    form_class = WellStateForm
-    template_name = "core/well_state/well_state_create.html"
+    fields = '__all__'
 
 
 class WellStateUpdateView(UpdateView):
     model = WellState
     form_class = WellStateForm
-    template_name = "core/well_state/well_state_update.html"
+    template_name = "core/base_form.html"
 
 
-class WellStateDeleteView(UpdateView):
+class WellStateDeleteView(DeleteView):
     model = WellState
-    template_name = "core/well_state/well_state_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:well-states')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "запись",
+            "return_url": reverse_lazy('core:well-states')
+        })
+        return context
 
 
 class PumpParametersListView(ListView):
@@ -144,24 +167,31 @@ class PumpParametersListView(ListView):
 
 class PumpParametersDetailView(DetailView):
     model = PumpParameters
-    template_name = "core/pump_parameters/pump_parameters_detail.html"
+    template_name = "core/base_detail.html"
 
 
-class PumpParametersCreateView(CreateView):
+class PumpParametersCreateView(DefaultCreateMixin, CreateView):
     model = PumpParameters
     form_class = PumpParametersForm
-    template_name = "core/pump_parameters/pump_parameters_create.html"
 
 
 class PumpParametersUpdateView(UpdateView):
     model = PumpParameters
     form_class = PumpParametersForm
-    template_name = "core/pump_parameters/pump_parameters_update.html"
+    template_name = "core/base_form.html"
 
 
-class PumpParametersDeleteView(UpdateView):
+class PumpParametersDeleteView(DeleteView):
     model = PumpParameters
-    template_name = "core/pump_parameters/pump_parameters_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:pump-parameters')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "", "return_url": reverse_lazy('core:pump-parameters')
+        })
+        return context
 
 
 class WellExtractionListView(ListView):
@@ -173,24 +203,32 @@ class WellExtractionListView(ListView):
 
 class WellExtractionDetailView(DetailView):
     model = WellExtraction
-    template_name = "core/well_extraction/well_extractions_detail.html"
+    template_name = "core/base_detail.html"
 
 
-class WellExtractionCreateView(CreateView):
+class WellExtractionCreateView(DefaultCreateMixin, CreateView):
     model = WellExtraction
     form_class = WellExtractionForm
-    template_name = "core/well_extraction/well_extraction_create.html"
 
 
 class WellExtractionUpdateView(UpdateView):
     model = WellExtraction
     form_class = WellExtractionForm
-    template_name = "core/well_extraction/well_extraction_update.html"
+    template_name = "core/base_form.html"
 
 
-class WellExtractionDeleteView(UpdateView):
+class WellExtractionDeleteView(DeleteView):
     model = WellExtraction
-    template_name = "core/well_extraction/well_extraction_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:well-extractions')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "запись",
+            "return_url": reverse_lazy('core:well-extractions')
+        })
+        return context
 
 
 class CoreSampleListView(ListView):
@@ -202,24 +240,32 @@ class CoreSampleListView(ListView):
 
 class CoreSampleDetailView(DetailView):
     model = CoreSample
-    template_name = "core/core_samples/core_samples_detail.html"
+    template_name = "core/base_detail.html"
 
 
-class CoreSampleCreateView(CreateView):
+class CoreSampleCreateView(DefaultCreateMixin, CreateView):
     model = CoreSample
     form_class = CoreSampleForm
-    template_name = "core/core_samples/core_sample_create.html"
 
 
 class CoreSampleUpdateView(UpdateView):
     model = CoreSample
     form_class = CoreSampleForm
-    template_name = "core/core_samples/core_sample_update.html"
+    template_name = "core/base_form.html"
 
 
-class CoreSampleDeleteView(UpdateView):
+class CoreSampleDeleteView(DeleteView):
     model = CoreSample
-    template_name = "core/core_samples/core_sample_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:core-samples')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "",
+            "return_url": reverse_lazy('core:core-samples')
+        })
+        return context
 
 
 class SmushListView(ListView):
@@ -231,23 +277,32 @@ class SmushListView(ListView):
 
 class SmushDetailView(DetailView):
     model = Smush
-    template_name = "core/smushes/smushes_detail.html"
+    template_name = "core/base_detail.html"
 
 
-class SmushCreateView(CreateView):
+class SmushCreateView(DefaultCreateMixin, CreateView):
     model = Smush
     fields = '__all__'
-    template_name = "core/smushes/smush_create.html"
 
 
 class SmushUpdateView(UpdateView):
     model = Smush
-    template_name = "core/smushes/smush_update.html"
+    fields = '__all__'
+    template_name = "core/base_form.html"
 
 
-class SmushDeleteView(UpdateView):
+class SmushDeleteView(DeleteView):
     model = Smush
-    template_name = "core/smushes/smush_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:smushes')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "",
+            "return_url": reverse_lazy('core:smushes')
+        })
+        return context
 
 
 class ClusterListView(ListView):
@@ -262,20 +317,29 @@ class ClusterDetailView(DetailView):
     template_name = "core/clusters/clusters_detail.html"
 
 
-class ClusterCreateView(CreateView):
+class ClusterCreateView(DefaultCreateMixin, CreateView):
     model = Cluster
     fields = '__all__'
-    template_name = "core/clusters/cluster_create.html"
 
 
 class ClusterUpdateView(UpdateView):
     model = Cluster
-    template_name = "core/clusters/cluster_update.html"
+    fields = '__all__'
+    template_name = "core/base_form.html"
 
 
-class ClusterDeleteView(UpdateView):
+class ClusterDeleteView(DeleteView):
     model = Cluster
-    template_name = "core/clusters/cluster_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:clusters')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "куст скважин",
+            "return_url": reverse_lazy('core:clusters')
+        })
+        return context
 
 
 class LayerListView(ListView):
@@ -287,20 +351,29 @@ class LayerListView(ListView):
 
 class LayerDetailView(DetailView):
     model = Layer
-    template_name = "core/layers/layers_detail.html"
+    template_name = "core/base_detail.html"
 
 
-class LayerCreateView(CreateView):
+class LayerCreateView(DefaultCreateMixin, CreateView):
     model = Layer
     fields = '__all__'
-    template_name = "core/layers/layer_create.html"
 
 
 class LayerUpdateView(UpdateView):
     model = Layer
-    template_name = "core/layers/layer_update.html"
+    fields = '__all__'
+    template_name = "core/base_form.html"
 
 
-class LayerDeleteView(UpdateView):
+class LayerDeleteView(DeleteView):
     model = Layer
-    template_name = "core/layers/layer_delete.html"
+    template_name = "core/base_delete.html"
+    success_url = reverse_lazy('core:layers')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            "message_str": "пласт",
+            "return_url": reverse_lazy('core:layers')
+        })
+        return context

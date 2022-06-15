@@ -6,11 +6,10 @@ from django_admin_geomap import GeoItem
 from django.urls import reverse
 
 
-from core.utils import get_field_values
-from core.models.utils import GetFieldsMixin
+from core.models.utils import GetFieldsMixin, GetVerboseNameMixin
 
 
-class Well(models.Model, GeoItem, GetFieldsMixin):
+class Well(models.Model, GeoItem, GetFieldsMixin, GetVerboseNameMixin):
 
     @property
     def geomap_latitude(self):
@@ -55,23 +54,18 @@ class Well(models.Model, GeoItem, GetFieldsMixin):
     def get_absolute_url(self):
         return reverse('core:wells-detail', kwargs={"pk": self.pk})
 
-    # @classmethod
-    # def get_field_names(cls, exclude_ids=True, exclude_foreign_keys=True):
-    #     if not exclude_ids and not exclude_foreign_keys:
-    #         fields = tuple(cls._meta.fields)
-    #     else:
-    #         fields = tuple(
-    #             filter(lambda field:
-    #                    (exclude_foreign_keys is False or field.get_internal_type() != "ForeignKey") and
-    #                    (exclude_ids is False or field.verbose_name != "ID"),
-    #                    cls._meta.fields))
-    #     result = [field.verbose_name for field in fields]
-    #     return result
+    @classmethod
+    def genitive_case(cls):
+        return "скважины"
 
-    # https://stackoverflow.com/questions/10027298/django-detailview-template-show-display-values-of-all-fields
+    def get_update_url(self):
+        return reverse('core:well-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:well-delete', kwargs={"pk": self.pk})
 
 
-class Field(models.Model, GetFieldsMixin):
+class Field(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     name = models.CharField("Название месторождения", max_length=255, unique=True)
     field_type = models.CharField("Тип месторождения", max_length=255)
     x_coordinate = models.FloatField("Координата Х", max_length=50)
@@ -90,8 +84,18 @@ class Field(models.Model, GetFieldsMixin):
     def get_absolute_url(self):
         return reverse('core:fields-detail', kwargs={"pk": self.pk})
 
+    @classmethod
+    def genitive_case(cls):
+        return "месторождения"
 
-class Organization(models.Model):
+    def get_update_url(self):
+        return reverse('core:field-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:field-delete', kwargs={"pk": self.pk})
+
+
+class Organization(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     name = models.CharField("Название организации", max_length=255, unique=True)
     description = models.TextField('Описание', null=True, blank=True)
     abbreviation = models.CharField("Аббревиатура", max_length=20, null=True, blank=True)
@@ -103,8 +107,21 @@ class Organization(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('core:organizations-detail', kwargs={"pk": self.pk})
 
-class WellState(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "организации"
+
+    def get_update_url(self):
+        return reverse('core:organization-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:organization-delete', kwargs={"pk": self.pk})
+
+
+class WellState(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     record_date = models.DateField("Дата создания записи", auto_now_add=True)
     status = models.CharField("Текущий статус", max_length=255)
     uptime = models.FloatField("Время работы", max_length=10)
@@ -115,14 +132,27 @@ class WellState(models.Model, GetFieldsMixin):
                              related_name='state_notes', verbose_name='Скважина')
 
     class Meta:
-        verbose_name = 'Состояние скважины'
+        verbose_name = 'Запись'
         verbose_name_plural = 'Состояния скважин'
 
     def __str__(self):
         return f"Состояние скважины {self.well.name} на момент {self.record_date}"
 
+    def get_absolute_url(self):
+        return reverse('core:well-states-detail', kwargs={"pk": self.pk})
 
-class PumpParameters(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "записи о состоянии скважины"
+
+    def get_update_url(self):
+        return reverse('core:well-state-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:well-state-delete', kwargs={"pk": self.pk})
+
+
+class PumpParameters(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     pump_parameters_measurement_date = models.DateField("Дата измерения параметров насоса")
     pump_type = models.CharField("Вид насоса", max_length=255)
     pump_state = models.CharField("Состояние насоса", max_length=255)
@@ -138,8 +168,21 @@ class PumpParameters(models.Model, GetFieldsMixin):
     def __str__(self):
         return f"Насос скважины {self.well.name}"
 
+    def get_absolute_url(self):
+        return reverse('core:pump-parameters-detail', kwargs={"pk": self.pk})
 
-class WellExtraction(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "насоса"
+
+    def get_update_url(self):
+        return reverse('core:pump-parameters-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:pump-parameters-delete', kwargs={"pk": self.pk})
+
+
+class WellExtraction(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     year = models.IntegerField("Год")
     record_date = models.DateField("Дата создания записи", auto_now_add=True)
     oil_output_t = models.FloatField("Добыча нефти, т", max_length=50)
@@ -156,14 +199,27 @@ class WellExtraction(models.Model, GetFieldsMixin):
     well = models.ForeignKey('Well', on_delete=models.CASCADE, related_name='extraction_notes', verbose_name='Скважина')
 
     class Meta:
-        verbose_name = 'Добыча скважины'
+        verbose_name = 'Запись'
         verbose_name_plural = 'Добычи скважин'
 
     def __str__(self):
         return f"Добыча cкважины {self.well.name} за {self.year} год "
 
+    def get_absolute_url(self):
+        return reverse('core:well-extractions-detail', kwargs={"pk": self.pk})
 
-class CoreSample(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "записи о добыче скважины"
+
+    def get_update_url(self):
+        return reverse('core:well-extractions-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:well-extractions-delete', kwargs={"pk": self.pk})
+
+
+class CoreSample(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     sample_number = models.PositiveIntegerField("Номер образца", unique=True)
     sampling_date = models.DateField("Дата отбора керна")
     sampling_method = models.CharField("Способ отбора керна", max_length=255)
@@ -183,8 +239,21 @@ class CoreSample(models.Model, GetFieldsMixin):
     def __str__(self):
         return f"Керн № {self.sample_number}"
 
+    def get_absolute_url(self):
+        return reverse('core:core-samples-detail', kwargs={"pk": self.pk})
 
-class Smush(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "керна"
+
+    def get_update_url(self):
+        return reverse('core:core-sample-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:core-sample-delete', kwargs={"pk": self.pk})
+
+
+class Smush(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     smush_type = models.CharField("Вид бурового раствора", max_length=255)
     density_of_drilling_liquid = models.FloatField("Плотность промывочных жидкостей", max_length=50)
     viscosity = models.FloatField("Вязкость", max_length=50)
@@ -202,8 +271,21 @@ class Smush(models.Model, GetFieldsMixin):
     def __str__(self):
         return f"Буровой раствор {self.pk}"
 
+    def get_absolute_url(self):
+        return reverse('core:smushes-detail', kwargs={"pk": self.pk})
 
-class Cluster(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "бурового раствора"
+
+    def get_update_url(self):
+        return reverse('core:smush-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:smush-delete', kwargs={"pk": self.pk})
+
+
+class Cluster(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     name = models.CharField('Название куста', max_length=255)
     field = models.ForeignKey("Field", on_delete=models.CASCADE, related_name='clusters', verbose_name='Месторождение')
     max_deflection_of_borehole = models.FloatField("Максимальное отклонение забоя", max_length=50)
@@ -215,8 +297,21 @@ class Cluster(models.Model, GetFieldsMixin):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('core:clusters-detail', kwargs={"pk": self.pk})
 
-class Layer(models.Model, GetFieldsMixin):
+    @classmethod
+    def genitive_case(cls):
+        return "куста скважин"
+
+    def get_update_url(self):
+        return reverse('core:cluster-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:cluster-delete', kwargs={"pk": self.pk})
+
+
+class Layer(models.Model, GetFieldsMixin, GetVerboseNameMixin):
     name = models.CharField('Название пласта', max_length=255)
     reservoir_type = models.CharField('Тип коллектора', max_length=255)
     layer_pressure = models.FloatField("Пластовое давление", max_length=50)
@@ -250,6 +345,19 @@ class Layer(models.Model, GetFieldsMixin):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('core:layers-detail', kwargs={"pk": self.pk})
+
+    @classmethod
+    def genitive_case(cls):
+        return "пласта"
+
+    def get_update_url(self):
+        return reverse('core:layer-update', kwargs={"pk": self.pk})
+
+    def get_delete_url(self):
+        return reverse('core:layer-delete', kwargs={"pk": self.pk})
 
 
 class ImportSchema(models.Model):

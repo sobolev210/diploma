@@ -48,13 +48,7 @@
 #             if field.verbose_name in attr_names:
 #                 result.append((field, attr_names[field.verbose_name]))
 #         print(result)
-#
-#
-#
-#
-#
-#
-#
+
 #     def prepare_import_schema(self):
 #         #todo move to init
 #         type_name_index = 2
@@ -75,19 +69,7 @@
 #             # атрибут и столбик
 #             attr_names = [{item[3]: item[1]} for item in items]
 #             attributes = self.prepare_attrs_for_model(model, attr_names)
-#
-#
-#
+
 # a = ExcelDataImporter(schema_id=1, filename="123")
 # a.prepare_import_schema()
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+

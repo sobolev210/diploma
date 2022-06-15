@@ -1,19 +1,9 @@
 {% extends "core/base_detail.html" %}
 {% block content %}
-<h1>Месторождение "{{object}}"</h1>
-<table>
-    {% for param, value in object.get_fields %}
-        <tr>
-            <td>{{ param }} : {{ value }}</td>
-        </tr>
-    {% endfor %}
-</table>
-<br>
-<br>
-{% endblock %}
-{% block update_url %}
-{% url 'core:field-update' object.id %}
-{% endblock %}
-{% block delete_url %}
-{% url 'core:field-delete' object.id %}
+    <tr>
+        <td>Пласты : {% if object.layers.all %} {% for layer in object.layers.all %} <a
+                href="{% url 'core:layers-detail' layer.pk %}">{{layer.name}} </a>{% endfor %}
+            {% else %} не выбраны {%endif %}
+        </td>
+    </tr>
 {% endblock %}

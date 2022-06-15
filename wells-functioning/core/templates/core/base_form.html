@@ -6,6 +6,7 @@
         label {
             margin-top: 30px;
         }
+
         input {
             width: 250px;
         }
@@ -16,11 +17,11 @@
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>Объекты</title>
-    <link rel="stylesheet" href="{% static 'css/nicepage.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'css/Создание-объекта.css' %}" media="screen">
     <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>
-    <script class="u-script" type="text/javascript" src="{% static 'js/nicepage.js' %}" defer=""></script>
-    <meta name="generator" content="Nicepage 4.8.2, nicepage.com">
+    <script class="u-script" type="text/javascript" src="{% static 'js/base.js' %}" defer=""></script>
+
     <link id="u-theme-google-font" rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
 
@@ -39,7 +40,8 @@
 <header class="u-clearfix u-header u-palette-3-light-2 u-header" id="sec-9501">
     <div class="u-clearfix u-sheet u-sheet-1">
         <a href="{% url 'core:main' %}">
-            <img style="height:32px; width:160px; margin-top: 10px;" class="logos" src="{% static 'images/drawn_logo.png' %}" >
+            <img style="height:32px; width:160px; margin-top: 10px;" class="logos"
+                 src="{% static 'images/drawn_logo.png' %}">
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
             <div class="menu-collapse" style="font-size: 1.25rem; letter-spacing: 0px; font-weight: 600;">
@@ -102,7 +104,8 @@
                             </li>
                             <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'core:table' %}">Таблицы</a>
                             </li>
-                            <li class="u-nav-item"><a class="u-button-style u-nav-link" href="{% url 'login' %}">Выйти</a>
+                            <li class="u-nav-item"><a class="u-button-style u-nav-link"
+                                                      href="{% url 'login' %}">Выйти</a>
                             </li>
                         </ul>
                     </div>
@@ -120,13 +123,19 @@
                     <div class="u-container-style u-layout-cell u-left-cell u-size-30 u-size-xs-60 u-layout-cell-1"
                          src="">
                         <div class="u-container-layout u-valign-top u-container-layout-1">
-                            <h2 class="u-text u-text-default u-text-1">{%block title%}{%endblock%}</h2>
+                            <h2 class="u-text u-text-default u-text-1">
+                                {% if object %}
+                                Обновление {{object.genitive_case}} "{{object}}"
+                                {% else %}
+                                Создание {{title_str}}
+                                {% endif %}
+                            </h2>
                             <div class="u-form u-form-1">
                                 <form method="POST" style="padding: 10px" class="label">
                                     {% csrf_token %}
                                     {{form.as_p}}
-                                    <div  class="u-align-left u-form-group u-form-submit">
-                                        <input style="width: 150px"  type="submit" value="Сохранить"
+                                    <div class="u-align-left u-form-group u-form-submit">
+                                        <input style="width: 150px" type="submit" value="Сохранить"
                                                class="u-btn u-btn-submit u-button-style u-radius-50 u-btn-3">
                                     </div>
                                 </form>

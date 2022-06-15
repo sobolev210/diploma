@@ -4,6 +4,7 @@ def round_value(value):
     return value
 
 
+# https://stackoverflow.com/questions/10027298/django-detailview-template-show-display-values-of-all-fields
 def get_fields(model_obj, exclude_ids=True, exclude_foreign_keys=True):
     if not exclude_ids and not exclude_foreign_keys:
         fields = tuple(model_obj._meta.fields)

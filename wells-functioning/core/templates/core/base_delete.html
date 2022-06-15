@@ -8,11 +8,11 @@
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>Объекты</title>
-    <link rel="stylesheet" href="{% static 'css/nicepage.css' %}" media="screen">
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}" media="screen">
     <link rel="stylesheet" href="{% static 'css/Таблицы.css' %}" media="screen">
     <script class="u-script" type="text/javascript" src="{% static 'js/jquery.js' %}" defer=""></script>
-    <script class="u-script" type="text/javascript" src="{% static 'js/nicepage.js' %}" defer=""></script>
-    <meta name="generator" content="Nicepage 4.8.2, nicepage.com">
+    <script class="u-script" type="text/javascript" src="{% static 'js/base.js' %}" defer=""></script>
+
     <link id="u-theme-google-font" rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
 
@@ -112,7 +112,8 @@
                     <div class="u-container-style u-layout-cell u-left-cell u-size-30 u-size-xs-60 u-layout-cell-1"
                          src="">
                         <div class="u-container-layout u-container-layout-1">
-                            {% block content %}{% endblock %}
+                            <h1>Удаление {{object.genitive_case}}</h1>
+                            <p>Вы уверены, что хотите удалить {{message_str}} "{{ object }}" ?</p>
                             <form action="" method="POST">
                                 {% csrf_token %}
                                 <button type="submit" value="Удалить"
@@ -121,7 +122,7 @@
                                 </button>
 
                                 <button type="submit"
-                                        onclick="window.location='{% block return_url %}{% endblock %}' ; return false;"
+                                        onclick="window.location='{{return_url}}' ; return false;"
                                         value="Отмена"
                                         style="background-color: #478ac9; color: white; display: inline-block; border-color: #478ac9; height:46px; width:100px; margin: 20px 10px 0px 0px"
                                         class="u-button-style u-radius-50 u-btn-3">Отмена

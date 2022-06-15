@@ -22,6 +22,15 @@ class WellForm(ModelForm):
         }
 
 
+class OrganizationForm(ModelForm):
+    class Meta:
+        model = Organization
+        fields = "__all__"
+        widgets = {
+            'description': Textarea(attrs={'cols': 60, 'rows': 3}),
+        }
+
+
 class WellStateForm(ModelForm):
     class Meta:
         model = WellState

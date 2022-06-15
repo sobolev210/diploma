@@ -1,0 +1,9 @@
+{% extends "core/base_detail.html" %}
+{% block content %}
+    <tr>
+        <td>Месторождения : {% if object.fields.all %} {% for field in object.fields.all %} <a
+                href="{% url 'core:fields-detail' field.pk %}">{{field.name}} </a>{% endfor %}
+            {% else %} не выбраны {%endif %}
+        </td>
+    </tr>
+{% endblock %}
