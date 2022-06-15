@@ -41,7 +41,7 @@ class Well(models.Model, GeoItem, GetFieldsMixin, GetVerboseNameMixin):
     layers = models.ManyToManyField('Layer', related_name='wells', blank=True, verbose_name="Пласты")
     field = models.ForeignKey('Field', on_delete=models.CASCADE, related_name='wells', verbose_name='Месторождение')
 
-    # https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/ - code/coding - style/ # model-style
+    # https://docs.djangoproject.com/en/dev/internals/contributing/writing-code/coding-style/#model-style
     class Meta:
         verbose_name = 'Скважина'
         verbose_name_plural = 'Скважины'
@@ -50,7 +50,7 @@ class Well(models.Model, GeoItem, GetFieldsMixin, GetVerboseNameMixin):
     def __str__(self):
         return self.name
 
-    # for generic create view
+    # used by generic create view
     def get_absolute_url(self):
         return reverse('core:wells-detail', kwargs={"pk": self.pk})
 

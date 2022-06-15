@@ -70,9 +70,6 @@ class Command(BaseCommand):
                 print(f"Скважина с именем {well.name} уже существует")
         return wells
 
-    def create_well_state_data(self, well: Well) -> WellState:
-        pass
-
     def create_well_extraction_data(self, well: Well) -> None:
         oil_output_t = 0
         gas_output_m3 = 0

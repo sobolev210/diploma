@@ -48,30 +48,6 @@ class WellTableView(View):
         df.to_excel(response, index=False, sheet_name="Данные по скважинам")
         return response
 
-    # def post(self, request):
-    #     print(request["data"])
-    #     well_columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False)
-    #     list_of_chosen_models = [Field]
-    #     table_columns = list(well_columns.keys())
-    #     required_fields = list(well_columns.values())
-    #     for model in list_of_chosen_models:
-    #         fields = get_field_names(model=model, exclude_foreign_keys=False, exclude_ids=True)
-    #         required_fields += list(fields.values())
-    #         table_columns += list(fields.keys())
-    #     data = Well.objects.values(*required_fields)
-    #     #return render(request, "core/Главная.html")
-    #     return render(request, "core/wells_table.html", {"columns": table_columns, "well_data": data})
-
-
-class ExtendedWellTableView(View):
-    def get(self, request):
-        well_columns = get_field_names(model=Well, exclude_foreign_keys=False, exclude_ids=False)
-        field_columns = get_field_names(model=Field, exclude_foreign_keys=False, exclude_ids=True)
-        needed_columns = [f"field__{name}" for name in field_columns.values()]
-        data = Well.objects.values(*well_columns.values(), *needed_columns)  # .annotate(field_name=F('field__name'))
-        return render(request, "core/wells_table.html",
-                      {"columns": list(well_columns.keys()) + list(field_columns.keys()), "well_data": data})
-
 
 class WellExtractionChartView(View):
     _layers = Layer.objects.all()
@@ -130,7 +106,7 @@ class GroupedWellExtractionChartView(View):
                **get_field_names(WellExtraction, exclude_fields=["year", "record_date", ])}
 
     def get(self, request):
-        return render(request, "core/Графики-по-всей-компании.html", {"fields": self._fields})
+        return render(request, "core/company_chart.html", {"fields": self._fields})
 
     def post(self, request):
         field = request.POST.get("fields")
@@ -144,7 +120,7 @@ class GroupedWellExtractionChartView(View):
             representation=representation
         ).build_chart()
 
-        return render(request, "core/Графики-по-всей-компании.html", {
+        return render(request, "core/company_chart.html", {
             "image_name": "chart.png", "fields": self._fields, "group_by": group_by, "aggregation_type": aggregation_type,
             "field": field, "representation": representation
         })

@@ -7,22 +7,12 @@ from . import views
 app_name = 'core'
 
 urlpatterns = [
-    path('', login_required(TemplateView.as_view(template_name='core/Главная.html')), name="main"),
-    #path('', TemplateView.as_view(template_name='core/main.html'), name="main"),
-    # path('open', views.OpenView.as_view(), name='open'),
-    # path('apereo', views.ApereoView.as_view(), name='apereo'),
-    # path('manual', views.ManualProtect.as_view(), name='manual'),
-    # path('protect', views.ProtectView.as_view(), name='protect'),
-    # path('python', views.DumpPython.as_view(), name='python'),
-    path('chart-choice', TemplateView.as_view(template_name='core/Графики.html'), name="chart-choice"),
+    path('', login_required(TemplateView.as_view(template_name='core/main.html')), name="main"),
+    path('chart-choice', TemplateView.as_view(template_name='core/chart_choice.html'), name="chart-choice"),
     path('wells/charts/grouped', views.GroupedWellExtractionChartView.as_view(), name='grouped-chart'),
     path('objects', TemplateView.as_view(template_name='core/objects.html'), name="objects"),
     path('wells/table', views.WellTableView.as_view(), name='table'),
     path('wells/charts/extraction', views.WellExtractionChartView.as_view(), name='wells-extraction-chart'),
-    # path('wells/extended-table', views.ExtendedWellTableView.as_view(), name='wells-extended-table'),
-    # path('wells/sucess-url', views.WellCreateView.as_view(), name='wells-create'),
-    # path('fields/<int:pk>', views.FieldDetailView.as_view(), name='fields-detail'),
-    # path('fields/create', views.FieldCreateView.as_view(), name='fields-create'),
     path('map', views.map_view, name="map")
 ]
 
@@ -87,9 +77,4 @@ urlpatterns += [
     path('layers/<int:pk>/update', views.LayerUpdateView.as_view(), name='layer-update'),
     path('layers/<int:pk>/delete', views.LayerDeleteView.as_view(), name='layer-delete'),
 
-    # path('fluid-properties', views.FluidPropertiesListView.as_view(), name='fluid-properties'),
-    # path('fluid-properties/<int:pk>', views.FluidPropertiesDetailView.as_view(), name='fluid-properties-detail'),
-    # path('fluid-properties/create', views.FluidPropertiesCreateView.as_view(), name='layer-create'),
-    # path('fluid-properties/<int:pk>/update', views.FluidPropertiesUpdateView.as_view(), name='layer-update'),
-    # path('fluid-properties/<int:pk>/delete', views.FluidPropertiesDeleteView.as_view(), name='layer-delete'),
 ]

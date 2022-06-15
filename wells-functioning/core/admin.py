@@ -47,18 +47,3 @@ class ClusterAdmin(admin.ModelAdmin):
 @admin.register(Layer)
 class LayerAdmin(admin.ModelAdmin):
     pass
-
-
-# @admin.register(ImportSchema)
-# class ImportSchemaAdmin(admin.ModelAdmin):
-#     pass
-#
-#
-# @admin.register(ImportSchemaAttribute)
-# class ImportSchemaAttributeAdmin(admin.ModelAdmin):
-#     list_display = [
-#         "column_position",
-#         "type_name",
-#         "attr_name",
-#         "import_schema"
-#     ]
