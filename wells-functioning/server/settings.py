@@ -84,7 +84,7 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql',
 
-        'NAME': 'wellsfunctioning',
+        'NAME': 'wells_functioning',
 
         # 'USER': 'postgres',
         #
